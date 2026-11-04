@@ -20,6 +20,9 @@ class ResultadoAnalise:
     mapa: object
     pontos: list = field(default_factory=list)
     grupos: list = field(default_factory=list)
+    #: Frase que o relatorio diz em voz alta quando a analise nao cobre a
+    #: pasta inteira (menu de pastas, opcao "so os arquivos desta pasta").
+    abrangencia: str = None
 
     @property
     def erros_sintaxe(self):
@@ -27,7 +30,7 @@ class ResultadoAnalise:
 
     def to_dict(self):
         """Forma serializavel -- entrada do prompt da Fase 2 e da saida --json."""
-        return {
+        dados = {
             "caminho": self.caminho,
             "resumo_projeto": self.mapa.resumo(),
             "pontos": [p.to_dict() for p in self.pontos],
@@ -37,6 +40,9 @@ class ResultadoAnalise:
                 for g in self.grupos
             },
         }
+        if self.abrangencia:
+            dados["abrangencia"] = self.abrangencia
+        return dados
 
 
 def analisar(caminho, ignorar=None) -> ResultadoAnalise:

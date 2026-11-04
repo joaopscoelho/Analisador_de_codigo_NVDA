@@ -18,8 +18,14 @@ consulte-o para o raciocinio por tras de cada decisao.
   locais e abertos.
 - **Fase 4, fala via NVDA (so Windows): implementada, NAO validada com o
   NVDA real.** Ver "Fala via NVDA (Windows)".
-- Fase 3 (formatacao acessivel definitiva) e CLI de navegacao: pastas
-  criadas com docstrings, sem implementacao.
+- **Menu de pastas (Fase 4, primeira parte): funcionando.** Sem caminho na
+  linha de comando, o programa pergunta qual pasta analisar, um nivel por
+  vez, sem digitar caminho. Coberto por testes com entrada falsa; **ainda
+  nao testado com o NVDA real nem com uma pessoa cega** (ver "Menu de
+  pastas" e "O que foi e o que nao foi validado").
+- Fase 3 (formatacao acessivel definitiva) e navegacao pelos resultados
+  (proxima regiao, repetir, explicacao sob demanda): pastas criadas com
+  docstrings, sem implementacao.
 
 O escopo de analise e o **projeto inteiro**, nao um arquivo isolado.
 
@@ -61,6 +67,51 @@ Analise estatica (sem modelo, sem rede):
 PYTHONPATH=. python -m analisador caminho/do/projeto
 PYTHONPATH=. python -m analisador caminho/do/projeto --json
 ```
+
+Para guardar o relatorio em arquivo, use `--saida` em vez de `>`:
+
+```powershell
+python -m analisador caminho\do\projeto --explicar --saida saida_relatorio.txt
+```
+
+O `>` do PowerShell regrava a saida com a pagina de codigo do console e
+estraga os acentos ("Inferência" vira "Infer├¬ncia"); `--saida` grava em UTF-8
+direto do Python. Arquivos `saida_*` ficam fora do git.
+
+## Menu de pastas (sem digitar caminho)
+
+Sem caminho, o programa abre um menu que faz a navegacao pela pessoa. No
+Windows, o atalho `analisar.cmd` (na pasta `prototipo`) ativa o ambiente
+sozinho e dispensa o `PYTHONPATH`:
+
+```powershell
+cd prototipo
+.\analisar                      # abre o menu
+.\analisar --explicar           # menu e explicacao do modelo
+.\analisar caminho\do\projeto   # analisa direto, sem menu
+```
+
+Para chamar `analisar` de qualquer pasta, acrescente a pasta `prototipo` ao
+PATH do Windows (configuracao do usuario; o prototipo nao mexe nisso). Em
+macOS e Linux use `PYTHONPATH=. python -m analisador` sem caminho.
+
+Cada tela diz onde a pessoa esta, quantas pastas com codigo Python existem ali
+e lista no maximo sete, numeradas. Pastas sem Python e pastas de ferramenta
+(.venv, .git, node_modules) ficam de fora, e a tela diz quantas foram
+ocultadas. Comandos:
+
+- numero: entra na pasta (na segunda tela a numeracao continua: 8, 9...)
+- a: analisa a pasta atual. Se houver subpastas com codigo, pergunta se e a
+  pasta inteira ou so os arquivos soltos nela
+- v: volta uma pasta. m: mostra mais. r: projetos recentes. l: limpa o filtro
+- parte de um nome: filtra a lista, sem diferenciar acento nem maiuscula
+- caminho completo colado (no Explorador, "Copiar como caminho"): vai direto
+- Enter sozinho: repete a tela. ?: ajuda. s: sai sem analisar
+
+Na partida, se ja houve uma analise pelo menu, o ultimo projeto e oferecido
+(1 para usar de novo, 2 para escolher outra pasta). A lista de recentes fica
+em `%APPDATA%\analisador\recentes.json` (ou na pasta da variavel
+`ANALISADOR_CONFIG`), fora do projeto.
 
 ## Explicacao com modelo local (Ollama)
 
@@ -153,9 +204,10 @@ sistema de fala, ainda nao implementado.
 
 ## O que foi e o que nao foi validado
 
-Validado por testes automatizados (122 testes, sem modelo, rede, NVDA nem
+Validado por testes automatizados (170 testes, sem modelo, rede, NVDA nem
 Windows): analise estatica, grafo de chamadas, montagem dos prompts,
-orquestracao, politica de falhas e CLI (com um LLM falso); cliente do
+orquestracao, politica de falhas, CLI (com um LLM falso) e menu de pastas
+(com entrada falsa); cliente do
 Ollama contra um servidor HTTP falso que reproduz o formato documentado
 da API; falador do NVDA contra uma DLL falsa, busca da DLL e opcao
 `--falar` da CLI com um falador falso; chave de API da nuvem enviada so ao
@@ -163,6 +215,10 @@ host `ollama.com`.
 
 **Nao validado:**
 
+- Menu de pastas: nunca foi usado com o NVDA real nem por uma pessoa cega.
+  Sete itens por tela, texto sem acento e uma pergunta por vez sao decisoes
+  de projeto, nao resultados. Nao se sabe se a voz do NVDA le melhor com
+  acento. O `analisar.cmd` foi escrito mas nao executado no Windows.
 - NVDA: em 18/10/2026 a DLL x64 carregou e `testIfRunning` respondeu com o
   NVDA aberto, e o autor informou que o NVDA esta funcionando. Ainda sem
   registro: a versao do NVDA; se o relatorio inteiro vai em uma chamada ou
@@ -216,7 +272,11 @@ analisador/
   nvda/
     base.py           interface Falador e erros
     cliente.py        NvdaFalador: ctypes sobre o nvdaControllerClient.dll
-  cli/                Fase 4 - navegacao por etapas (vazio)
+  cli/                Fase 4 - menu de pastas (navegacao pelos resultados: vazio)
+    navegador.py      menu: um nivel por vez, filtro, escopo, confirmacao
+    recentes.py       ultimos projetos analisados pelo menu
+    texto.py          concordancia e nomes falaveis
+analisar.cmd         atalho do Windows: ativa o .venv e chama o analisador
 bibliotecas/          nvdaControllerClient.dll, baixada a parte (fora do git)
 testes/
   conftest.py                    fixtures e servidor Ollama falso
@@ -230,6 +290,7 @@ testes/
   test_prompts.py                conteudo dos prompts
   test_explicacao.py             orquestracao e CLI com LLM falso
   test_nvda.py                   falador do NVDA com DLL falsa e CLI --falar
+  test_navegador.py              menu de pastas, recentes, --saida e atalho .cmd
   fixtures/
     exemplo_funcionarios.py      fixture original, arquivo unico
     projeto_exemplo/             tres arquivos que se importam (secao 12)
@@ -285,3 +346,22 @@ testes/
 - **Reprodutibilidade.** Temperatura zero e semente fixa, registradas junto
   com o digest do modelo no `--json`. Nao garante saida identica entre
   versoes do Ollama ou hardwares diferentes.
+- **Menu de pastas: um nivel por vez, nunca a arvore.** Quem ouve uma
+  arvore inteira nao consegue "passar o olho": a tela diz onde a pessoa esta,
+  quantas pastas com codigo existem ali e lista no maximo sete. O que e
+  ocultado (sem Python, de sistema, de ferramenta) tem a contagem dita em
+  voz alta, para ninguem achar que a pasta nao existe.
+- **O menu e feito de linhas simples, nao de tela.** So `input()` e `print()`:
+  sem limpar a tela, sem cores, sem teclas especiais, que leitores de tela
+  tratam mal. O NVDA fala o que o terminal imprime, entao o menu nao usa a
+  DLL; ela continua so para o relatorio (`--falar`). Isso tambem deixa o menu
+  utilizavel com outros leitores de tela.
+- **Escopo dito antes de analisar.** Analisar so uma subpasta perde as
+  chamadas que vem de fora dela. O menu avisa uma vez por sessao, e o
+  relatorio diz "Escopo: ..." quando a pessoa pediu so os arquivos soltos.
+- **Gravar com `--saida`, nao com `>`.** Os acentos de `saida_gemma4.json`
+  estao corrompidos (UTF-8 lido como cp850 e regravado), padrao tipico do
+  redirecionamento do PowerShell. O Python grava o arquivo em UTF-8 direto.
+- **O relatorio diz o nome da pasta, nao o caminho.** "Analise de ." seria
+  falado como "analise de ponto"; o nome vem sem sublinhado e sem hifen.
+

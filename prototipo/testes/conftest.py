@@ -34,3 +34,9 @@ def ollama():
     servidor = OllamaFalso().iniciar()
     yield servidor
     servidor.parar()
+
+
+@pytest.fixture(autouse=True)
+def _config_isolada(tmp_path, monkeypatch):
+    """A lista de projetos recentes do usuario nunca e lida nem gravada em teste."""
+    monkeypatch.setenv("ANALISADOR_CONFIG", str(tmp_path / "config_analisador"))

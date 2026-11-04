@@ -1,10 +1,11 @@
 """
 Runner minimo de linha de comando: "python -m analisador <caminho>".
 
-Fase 1 e 2 (secao 13 do documento). Nao e a CLI final: a navegacao por
-etapas (listar, proximo, detalhe N, buscar) e a Fase 4, e a formatacao
-acessivel definitiva e a Fase 3. Com --falar, o relatorio tambem e entregue
-ao NVDA (so Windows, ver analisador/nvda).
+Fase 1 e 2 (secao 13 do documento). Nao e a CLI final: a navegacao pelos
+resultados (proximo, detalhe N, buscar) e a Fase 4, e a formatacao
+acessivel definitiva e a Fase 3. Sem caminho, abre o menu de pastas
+(analisador/cli), que dispensa digitar o caminho do projeto. Com --falar, o
+relatorio tambem e entregue ao NVDA (so Windows, ver analisador/nvda).
 
 Sem --explicar, roda so a analise estatica (sem modelo, sem rede). Com
 --explicar, pede a um modelo local (Ollama) a visao geral e a explicacao de
@@ -18,8 +19,11 @@ posicao anunciada em palavras ("ponto critico 1 de 3").
 import argparse
 import json
 import sys
+from pathlib import Path
 
 from analisador.analise import analisar
+from analisador.cli import escolher_pasta
+from analisador.cli.texto import nome_falavel
 from analisador.explicacao import explicar
 from analisador.llm import ErroConfiguracaoLLM, criar_explicador
 from analisador.llm.local import CONTEXTO_PADRAO
@@ -47,6 +51,13 @@ def _plural(quantidade: int, singular: str, plural: str) -> str:
     return f"{quantidade} {singular if quantidade == 1 else plural}"
 
 
+def _linhas_escopo(resultado):
+    """Diz em voz alta quando a analise nao cobre a pasta inteira."""
+    if not resultado.abrangencia:
+        return []
+    return [f"Escopo: {resultado.abrangencia}."]
+
+
 def _linhas_erros_sintaxe(resultado):
     if not resultado.erros_sintaxe:
         return []
@@ -62,7 +73,9 @@ def relatorio_texto(resultado) -> str:
     mapa = resultado.mapa
     arquivos = _plural(len(mapa.arquivos), "arquivo analisado", "arquivos analisados")
     definicoes = _plural(len(mapa.definicoes), "definicao encontrada", "definicoes encontradas")
-    linhas = [f"Analise de {resultado.caminho}.", f"{arquivos}, {definicoes}."]
+    linhas = [f"Analise de {nome_falavel(resultado.caminho)}."]
+    linhas.extend(_linhas_escopo(resultado))
+    linhas.append(f"{arquivos}, {definicoes}.")
     linhas.extend(_linhas_erros_sintaxe(resultado))
 
     if not resultado.grupos:
@@ -115,7 +128,8 @@ def _corpo_da_explicacao(explicacao):
 
 def relatorio_explicado(resultado, explicacao) -> str:
     """Monta o relatorio com a explicacao do modelo, em texto corrido."""
-    linhas = [f"Analise de {resultado.caminho}."]
+    linhas = [f"Analise de {nome_falavel(resultado.caminho)}."]
+    linhas.extend(_linhas_escopo(resultado))
     linhas.extend(_linhas_erros_sintaxe(resultado))
 
     linhas.append("")
@@ -144,6 +158,25 @@ def relatorio_explicado(resultado, explicacao) -> str:
     return "\n".join(linhas)
 
 
+def _gravar_saida(caminho, texto, como_json):
+    """Grava o relatorio em UTF-8 direto do Python. Devolve o erro, ou None.
+
+    O redirecionamento ">" do PowerShell decodifica a saida do programa com
+    a pagina de codigo do console (cp850, por exemplo) e regrava o arquivo:
+    "Inferência" vira "Infer├¬ncia". Gravar daqui evita a conversao. O texto
+    leva BOM para o Bloco de Notas antigo reconhecer UTF-8; o JSON nao, porque
+    leitores estritos de JSON recusam o BOM."""
+    try:
+        with open(caminho, "w", encoding="utf-8" if como_json else "utf-8-sig") as arquivo:
+            arquivo.write(texto + "\n")
+    except OSError as erro:
+        mensagem = f"Nao foi possivel gravar o relatorio em {caminho}: {erro.strerror or erro}."
+        print(f"Erro: {mensagem}", file=sys.stderr)
+        return mensagem
+    print(f"Relatorio gravado em {Path(caminho).resolve()}.", file=sys.stderr)
+    return None
+
+
 def _progresso(etapa, total, titulo):
     """Avisa em stderr que o modelo ainda esta trabalhando (leva minutos)."""
     print(f"Gerando explicacao {etapa} de {total}: {titulo}.", file=sys.stderr, flush=True)
@@ -165,7 +198,9 @@ def main(argv=None):
         description="Analisa um arquivo ou projeto Python e lista os pontos "
                     "criticos com o contexto estrutural de cada um.",
     )
-    parser.add_argument("caminho", help="arquivo .py ou pasta do projeto")
+    parser.add_argument("caminho", nargs="?", default=None,
+                        help="arquivo .py ou pasta do projeto; sem ele, abre o "
+                             "menu de pastas")
     parser.add_argument("--json", action="store_true",
                         help="imprime o resultado em JSON")
     parser.add_argument("--explicar", action="store_true",
@@ -187,9 +222,15 @@ def main(argv=None):
     parser.add_argument("--dll", default=None,
                         help="caminho do nvdaControllerClient.dll (padrao: variavel "
                              "NVDA_CONTROLLER_DLL ou a pasta bibliotecas)")
+    parser.add_argument("--saida", default=None, metavar="ARQUIVO",
+                        help="grava tambem o relatorio neste arquivo, em UTF-8; use no "
+                             "lugar de '>' no PowerShell, que estraga os acentos")
     args = parser.parse_args(argv)
     if args.falar and args.json:
         parser.error("--falar nao se combina com --json: JSON nao serve para ouvir.")
+    if args.caminho is None and args.json:
+        parser.error("--json precisa do caminho do projeto: o menu de pastas "
+                     "fala com a pessoa e nao se combina com JSON.")
 
     _configurar_saida()
 
@@ -207,7 +248,20 @@ def main(argv=None):
             print(f"Erro: {erro_fala}", file=sys.stderr)
             print("O relatorio sera entregue apenas como texto.", file=sys.stderr)
 
-    resultado = analisar(args.caminho)
+    # Sem caminho, a pessoa escolhe a pasta pelo menu. Isso vem depois da
+    # conferencia do NVDA, para o erro de fala aparecer antes de qualquer pergunta.
+    ignorar = None
+    abrangencia = None
+    if args.caminho is None:
+        escolha = escolher_pasta(com_explicacao=args.explicar)
+        if escolha is None:
+            return 0
+        args.caminho = str(escolha.caminho)
+        ignorar = escolha.ignorar
+        abrangencia = escolha.abrangencia
+
+    resultado = analisar(args.caminho, ignorar=ignorar)
+    resultado.abrangencia = abrangencia
 
     explicacao = None
     erro_explicacao = None
@@ -228,7 +282,8 @@ def main(argv=None):
             dados["explicacao"] = explicacao.to_dict()
         if erro_explicacao is not None:
             dados["erro_explicacao"] = erro_explicacao
-        print(json.dumps(dados, ensure_ascii=False, indent=2))
+        texto = json.dumps(dados, ensure_ascii=False, indent=2)
+        print(texto)
     else:
         if explicacao is not None:
             texto = relatorio_explicado(resultado, explicacao)
@@ -242,9 +297,15 @@ def main(argv=None):
                 erro_fala = str(erro)
                 print(f"Erro: {erro_fala}", file=sys.stderr)
 
+    erro_saida = None
+    if args.saida:
+        erro_saida = _gravar_saida(args.saida, texto, como_json=args.json)
+
     if erro_explicacao is not None:
         return 2
-    return 3 if erro_fala is not None else 0
+    if erro_fala is not None:
+        return 3
+    return 4 if erro_saida is not None else 0
 
 
 if __name__ == "__main__":
