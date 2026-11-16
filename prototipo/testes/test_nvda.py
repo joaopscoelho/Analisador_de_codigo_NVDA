@@ -318,3 +318,169 @@ def test_cli_json_continua_igual_sem_falar(capsys, projeto_exemplo):
     dados = json.loads(capsys.readouterr().out)
     assert dados["caminho"] == str(projeto_exemplo)
     assert len(dados["grupos"]) == len(analisar(projeto_exemplo).grupos)
+
+
+# --------------------------------------------- abrir o NVDA automaticamente
+
+class DllQueAcorda(DllFalsa):
+    """Responde 1722 ate o NVDA ser aberto; depois, mais algumas consultas
+    sem resposta (o NVDA carregando) e entao 0."""
+
+    def __init__(self, consultas_ate_responder=2):
+        super().__init__(em_execucao=RPC_SERVIDOR_INDISPONIVEL)
+        self.aberto = False
+        self.restantes = consultas_ate_responder
+
+    def nvdaController_testIfRunning(self):
+        if self.aberto:
+            if self.restantes <= 0:
+                return 0
+            self.restantes -= 1
+        return RPC_SERVIDOR_INDISPONIVEL
+
+
+class Relogio:
+    """Relogio falso: esperar avanca o tempo sem dormir de verdade."""
+
+    def __init__(self):
+        self.agora = 0.0
+
+    def __call__(self):
+        return self.agora
+
+    def esperar(self, segundos):
+        self.agora += segundos
+
+
+def _falador_com_abertura(dll, tmp_path, leitor_ativo=False, com_executavel=True,
+                          abrir=None, tempo_maximo=20):
+    relogio, avisos, abertos = Relogio(), [], []
+    executavel = tmp_path / "nvda.exe"
+    if com_executavel:
+        executavel.write_bytes(b"")
+
+    def abrir_falso(caminho):
+        abertos.append(caminho)
+        dll.aberto = True
+
+    falador = NvdaFalador(
+        biblioteca=dll, abrir_automaticamente=True, caminho_nvda=str(executavel),
+        abrir=abrir or abrir_falso, leitor_ativo=lambda: leitor_ativo,
+        esperar=relogio.esperar, relogio=relogio, avisar=avisos.append,
+        tempo_maximo=tempo_maximo)
+    return falador, avisos, abertos, relogio, executavel
+
+
+def test_nvda_fechado_e_aberto_e_depois_fala(tmp_path):
+    dll = DllQueAcorda(consultas_ate_responder=2)
+    falador, avisos, abertos, relogio, executavel = _falador_com_abertura(dll, tmp_path)
+    falador.verificar()
+    assert abertos == [executavel]
+    assert "Abrindo o NVDA" in avisos[0] and "20 segundos" in avisos[0]
+    assert avisos[-1] == "NVDA aberto."
+    assert relogio.agora < 20
+    falador.falar("ola")
+    assert dll.faladas == ["ola"]
+
+
+def test_nao_abre_o_nvda_por_cima_de_outro_leitor_de_tela(tmp_path):
+    dll = DllQueAcorda()
+    falador, avisos, abertos, _, _ = _falador_com_abertura(dll, tmp_path, leitor_ativo=True)
+    with pytest.raises(ErroFaladorIndisponivel) as erro:
+        falador.verificar()
+    assert "outro leitor de tela" in str(erro.value)
+    assert abertos == [] and avisos == []
+
+
+def test_sem_nvda_exe_diz_onde_procurou_e_como_indicar(tmp_path):
+    dll = DllQueAcorda()
+    falador, _, abertos, _, executavel = _falador_com_abertura(dll, tmp_path, com_executavel=False)
+    with pytest.raises(ErroFaladorIndisponivel) as erro:
+        falador.verificar()
+    mensagem = str(erro.value)
+    assert str(executavel) in mensagem and cliente.VARIAVEL_NVDA in mensagem
+    assert abertos == []
+
+
+def test_nvda_que_nao_responde_no_prazo_e_dito_em_palavras(tmp_path):
+    dll = DllQueAcorda(consultas_ate_responder=10 ** 6)
+    falador, _, abertos, relogio, _ = _falador_com_abertura(dll, tmp_path)
+    with pytest.raises(ErroFaladorIndisponivel, match="nao respondeu em 20 segundos"):
+        falador.verificar()
+    assert len(abertos) == 1
+    assert relogio.agora >= 20
+
+
+def test_falha_ao_abrir_o_processo_e_dita_em_palavras(tmp_path):
+    def abrir_que_falha(caminho):
+        raise PermissionError(5, "Acesso negado")
+
+    falador, _, _, _, _ = _falador_com_abertura(DllQueAcorda(), tmp_path, abrir=abrir_que_falha)
+    with pytest.raises(ErroFaladorIndisponivel) as erro:
+        falador.verificar()
+    assert "Nao consegui abrir o NVDA" in str(erro.value)
+    assert "Acesso negado" in str(erro.value)
+
+
+def test_outro_codigo_de_erro_nao_tenta_abrir(tmp_path):
+    dll = DllFalsa(em_execucao=5)
+    dll.aberto = False
+    falador, _, abertos, _, _ = _falador_com_abertura(dll, tmp_path)
+    with pytest.raises(ErroFaladorIndisponivel, match="erro 5"):
+        falador.verificar()
+    assert abertos == []
+
+
+def test_dll_falsa_nunca_abre_o_nvda_de_verdade(monkeypatch):
+    def proibido(*a, **k):
+        raise AssertionError("os testes nao podem abrir o NVDA real")
+
+    monkeypatch.setattr(cliente, "abrir_nvda", proibido)
+    monkeypatch.setattr(cliente, "outro_leitor_de_tela_ativo", proibido)
+    falador = NvdaFalador(biblioteca=DllFalsa(em_execucao=RPC_SERVIDOR_INDISPONIVEL))
+    with pytest.raises(ErroFaladorIndisponivel, match="aberto"):
+        falador.verificar()
+
+
+def test_localiza_o_nvda_nas_pastas_padrao_e_pela_variavel(monkeypatch, tmp_path):
+    monkeypatch.delenv(cliente.VARIAVEL_NVDA, raising=False)
+    monkeypatch.delenv("ProgramFiles(x86)", raising=False)
+    monkeypatch.setenv("ProgramFiles", str(tmp_path))
+    assert cliente.localizar_nvda() is None
+    instalado = tmp_path / "NVDA" / "nvda.exe"
+    instalado.parent.mkdir()
+    instalado.write_bytes(b"")
+    assert cliente.localizar_nvda() == instalado
+
+    portatil = tmp_path / "portatil" / "nvda.exe"
+    monkeypatch.setenv(cliente.VARIAVEL_NVDA, str(portatil))
+    assert cliente.localizar_nvda() is None, "caminho explicito errado nao cai na pasta padrao"
+    portatil.parent.mkdir()
+    portatil.write_bytes(b"")
+    assert cliente.localizar_nvda() == portatil
+
+
+def test_fora_do_windows_nao_ha_leitor_de_tela_a_conferir(monkeypatch):
+    monkeypatch.setattr(cliente, "_e_windows", lambda: False)
+    assert cliente.outro_leitor_de_tela_ativo() is False
+
+
+def test_cli_abre_o_nvda_fechado_e_fala_o_relatorio(monkeypatch, capsys, projeto_exemplo, tmp_path):
+    dll = DllQueAcorda()
+    falador, avisos, abertos, _, _ = _falador_com_abertura(dll, tmp_path)
+    _usar_falador(monkeypatch, falador)
+    codigo = cli.main([str(projeto_exemplo), "--falar"])
+    assert codigo == 0
+    assert len(abertos) == 1 and avisos[-1] == "NVDA aberto."
+    assert len(dll.faladas) == 1 and "Regiao 1 de 4" in dll.faladas[0]
+
+
+def test_abrir_nvda_usa_o_caminho_de_um_atalho(monkeypatch, tmp_path):
+    # O nvda.exe instalado recusa CreateProcess (erro 740, visto no Windows em
+    # 08/11/2026); ele precisa ser aberto pelo ShellExecute, que e o os.startfile.
+    abertos = []
+    monkeypatch.setattr(cliente, "_e_windows", lambda: True)
+    monkeypatch.setattr(cliente.os, "startfile", abertos.append, raising=False)
+    executavel = tmp_path / "nvda.exe"
+    cliente.abrir_nvda(executavel)
+    assert abertos == [str(executavel)]

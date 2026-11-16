@@ -173,7 +173,39 @@
       \verb https://arxiv.org/abs/2508.12461
       \endverb
     \endentry
-    \entry{brown2020fewshot}{online}{}
+    \entry{brasil2015lbi}{online}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=0216cb0d20fc838196b8d633f7813d3b}{%
+           family={{BRASIL}},
+           familyi={B\bibinitperiod}}}%
+      }
+      \strng{namehash}{0216cb0d20fc838196b8d633f7813d3b}
+      \strng{fullhash}{0216cb0d20fc838196b8d633f7813d3b}
+      \strng{bibnamehash}{0216cb0d20fc838196b8d633f7813d3b}
+      \strng{authorbibnamehash}{0216cb0d20fc838196b8d633f7813d3b}
+      \strng{authornamehash}{0216cb0d20fc838196b8d633f7813d3b}
+      \strng{authorfullhash}{0216cb0d20fc838196b8d633f7813d3b}
+      \field{sortinit}{B}
+      \field{sortinithash}{d7095fff47cda75ca2589920aae98399}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{subtitle}{Institui a Lei Brasileira de Inclusão da Pessoa com Deficiência (Estatuto da Pessoa com Deficiência)}
+      \field{title}{Lei nº 13.146, de 6 de julho de 2015}
+      \field{urlday}{6}
+      \field{urlmonth}{11}
+      \field{urlyear}{2026}
+      \field{year}{2015}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm
+      \endverb
+      \verb{url}
+      \verb https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm
+      \endverb
+    \endentry
+    \entry{brown2020fewshot}{inproceedings}{}
       \true{moreauthor}
       \true{morelabelname}
       \name{author}{5}{}{%
@@ -208,6 +240,9 @@
            giveni={J\bibinitperiod},
            givenun=0}}%
       }
+      \list{publisher}{1}{%
+        {Curran Associates}%
+      }
       \strng{namehash}{0884233a667161739ddd01569813457f}
       \strng{fullhash}{cffefe424ac1214cfbf874c60e380fca}
       \strng{bibnamehash}{0884233a667161739ddd01569813457f}
@@ -220,21 +255,21 @@
       \field{labeldatesource}{}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{eprinttype}{arxiv}
+      \field{booktitle}{Advances in Neural Information Processing Systems}
       \field{title}{Language Models are Few-Shot Learners}
-      \field{urlday}{18}
-      \field{urlmonth}{10}
+      \field{urlday}{6}
+      \field{urlmonth}{11}
       \field{urlyear}{2026}
+      \field{volume}{33}
       \field{year}{2020}
       \field{urldateera}{ce}
-      \verb{eprint}
-      \verb 2005.14165
-      \endverb
+      \field{pages}{1877\bibrangedash 1901}
+      \range{pages}{25}
       \verb{urlraw}
-      \verb https://arxiv.org/abs/2005.14165
+      \verb https://papers.neurips.cc/paper/2020/hash/1457c0d6bfcb4967418bfb8ac142f64a-Abstract.html
       \endverb
       \verb{url}
-      \verb https://arxiv.org/abs/2005.14165
+      \verb https://papers.neurips.cc/paper/2020/hash/1457c0d6bfcb4967418bfb8ac142f64a-Abstract.html
       \endverb
     \endentry
     \entry{chen2021codex}{online}{}
@@ -422,7 +457,7 @@
       \verb https://arxiv.org/abs/2407.21783
       \endverb
     \endentry
-    \entry{hou2024llmse}{online}{}
+    \entry{hou2024llmse}{article}{}
       \name{author}{10}{}{%
         {{un=0,uniquepart=base,hash=bbe203ccb474a175f598679a28e5081b}{%
            family={Hou},
@@ -497,21 +532,15 @@
       \field{labeldatesource}{}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{eprinttype}{arxiv}
+      \field{journaltitle}{ACM Transactions on Software Engineering and Methodology}
+      \field{number}{8}
       \field{title}{Large Language Models for Software Engineering: A Systematic Literature Review}
-      \field{urlday}{18}
-      \field{urlmonth}{10}
-      \field{urlyear}{2026}
+      \field{volume}{33}
       \field{year}{2024}
-      \field{urldateera}{ce}
-      \verb{eprint}
-      \verb 2308.10620
-      \endverb
-      \verb{urlraw}
-      \verb https://arxiv.org/abs/2308.10620
-      \endverb
-      \verb{url}
-      \verb https://arxiv.org/abs/2308.10620
+      \field{pages}{1\bibrangedash 79}
+      \range{pages}{79}
+      \verb{doi}
+      \verb 10.1145/3695988
       \endverb
     \endentry
     \entry{latinoware40920}{inproceedings}{}
@@ -891,7 +920,7 @@
       \verb https://arxiv.org/abs/2410.21276
       \endverb
     \endentry
-    \entry{ouyang2022instructions}{online}{}
+    \entry{ouyang2022instructions}{inproceedings}{}
       \true{moreauthor}
       \true{morelabelname}
       \name{author}{3}{}{%
@@ -914,6 +943,9 @@
            giveni={X\bibinitperiod},
            givenun=0}}%
       }
+      \list{publisher}{1}{%
+        {Curran Associates}%
+      }
       \strng{namehash}{6f023f6381f9da10679f584a13a6c130}
       \strng{fullhash}{6f023f6381f9da10679f584a13a6c130}
       \strng{bibnamehash}{6f023f6381f9da10679f584a13a6c130}
@@ -926,21 +958,21 @@
       \field{labeldatesource}{}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{eprinttype}{arxiv}
+      \field{booktitle}{Advances in Neural Information Processing Systems}
       \field{title}{Training language models to follow instructions with human feedback}
-      \field{urlday}{18}
-      \field{urlmonth}{10}
+      \field{urlday}{6}
+      \field{urlmonth}{11}
       \field{urlyear}{2026}
+      \field{volume}{35}
       \field{year}{2022}
       \field{urldateera}{ce}
-      \verb{eprint}
-      \verb 2203.02155
-      \endverb
+      \field{pages}{27730\bibrangedash 27744}
+      \range{pages}{15}
       \verb{urlraw}
-      \verb https://arxiv.org/abs/2203.02155
+      \verb https://proceedings.neurips.cc/paper_files/paper/2022/hash/b1efde53be364a73914f58805a001731-Abstract-Conference.html
       \endverb
       \verb{url}
-      \verb https://arxiv.org/abs/2203.02155
+      \verb https://proceedings.neurips.cc/paper_files/paper/2022/hash/b1efde53be364a73914f58805a001731-Abstract-Conference.html
       \endverb
     \endentry
     \entry{sahoo2024prompt}{online}{}
@@ -1306,7 +1338,7 @@
       \verb https://tree-sitter.github.io/tree-sitter/
       \endverb
     \endentry
-    \entry{vaswani2017attention}{online}{}
+    \entry{vaswani2017attention}{inproceedings}{}
       \name{author}{8}{}{%
         {{un=0,uniquepart=base,hash=7f28e84700536646dd6620a0db07ad09}{%
            family={Vaswani},
@@ -1357,6 +1389,9 @@
            giveni={I\bibinitperiod},
            givenun=0}}%
       }
+      \list{publisher}{1}{%
+        {Curran Associates}%
+      }
       \strng{namehash}{ee273ab30cfb889666f8c4d806eb9ce7}
       \strng{fullhash}{f82970bbd2bdd7a002d2af62b743d5cc}
       \strng{bibnamehash}{ee273ab30cfb889666f8c4d806eb9ce7}
@@ -1369,24 +1404,14 @@
       \field{labeldatesource}{}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{eprinttype}{arxiv}
+      \field{booktitle}{Advances in Neural Information Processing Systems}
       \field{title}{Attention Is All You Need}
-      \field{urlday}{18}
-      \field{urlmonth}{10}
-      \field{urlyear}{2026}
+      \field{volume}{30}
       \field{year}{2017}
-      \field{urldateera}{ce}
-      \verb{eprint}
-      \verb 1706.03762
-      \endverb
-      \verb{urlraw}
-      \verb https://arxiv.org/abs/1706.03762
-      \endverb
-      \verb{url}
-      \verb https://arxiv.org/abs/1706.03762
-      \endverb
+      \field{pages}{5998\bibrangedash 6008}
+      \range{pages}{11}
     \endentry
-    \entry{wei2022cot}{online}{}
+    \entry{wei2022cot}{inproceedings}{}
       \name{author}{9}{}{%
         {{un=0,uniquepart=base,hash=61331a11b490f3d927555985facd25b3}{%
            family={Wei},
@@ -1443,6 +1468,9 @@
            giveni={D\bibinitperiod},
            givenun=0}}%
       }
+      \list{publisher}{1}{%
+        {Curran Associates}%
+      }
       \strng{namehash}{7e5e566ee8f47df717196e96221e7705}
       \strng{fullhash}{3f24890ded09deea1c8fd996843d5e2e}
       \strng{bibnamehash}{7e5e566ee8f47df717196e96221e7705}
@@ -1455,21 +1483,21 @@
       \field{labeldatesource}{}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{eprinttype}{arxiv}
+      \field{booktitle}{Advances in Neural Information Processing Systems}
       \field{title}{Chain-of-Thought Prompting Elicits Reasoning in Large Language Models}
-      \field{urlday}{18}
-      \field{urlmonth}{10}
+      \field{urlday}{6}
+      \field{urlmonth}{11}
       \field{urlyear}{2026}
+      \field{volume}{35}
       \field{year}{2022}
       \field{urldateera}{ce}
-      \verb{eprint}
-      \verb 2201.11903
-      \endverb
+      \field{pages}{24824\bibrangedash 24837}
+      \range{pages}{14}
       \verb{urlraw}
-      \verb https://arxiv.org/abs/2201.11903
+      \verb https://proceedings.neurips.cc/paper/2022/hash/9d5609613524ecf4f15af0f7b31abca4-Abstract-Conference.html
       \endverb
       \verb{url}
-      \verb https://arxiv.org/abs/2201.11903
+      \verb https://proceedings.neurips.cc/paper/2022/hash/9d5609613524ecf4f15af0f7b31abca4-Abstract-Conference.html
       \endverb
     \endentry
     \entry{w3c2024wcag22}{online}{}

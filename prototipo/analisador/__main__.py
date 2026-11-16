@@ -3,8 +3,9 @@ Runner minimo de linha de comando: "python -m analisador <caminho>".
 
 Fase 1 e 2 (secao 13 do documento). Nao e a CLI final: a navegacao pelos
 resultados (proximo, detalhe N, buscar) e a Fase 4, e a formatacao
-acessivel definitiva e a Fase 3. Sem caminho, abre o menu de pastas
-(analisador/cli), que dispensa digitar o caminho do projeto. Com --falar, o
+acessivel definitiva e a Fase 3. Sem caminho, analisa a pasta atual do
+terminal: a pessoa entra na pasta do projeto com cd e digita so o comando.
+Com --menu, a pasta e escolhida por um menu (analisador/cli). Com --falar, o
 relatorio tambem e entregue ao NVDA (so Windows, ver analisador/nvda).
 
 Sem --explicar, roda so a analise estatica (sem modelo, sem rede). Com
@@ -77,6 +78,14 @@ def relatorio_texto(resultado) -> str:
     linhas.extend(_linhas_escopo(resultado))
     linhas.append(f"{arquivos}, {definicoes}.")
     linhas.extend(_linhas_erros_sintaxe(resultado))
+
+    if not mapa.arquivos:
+        # Com a pasta atual como padrao, rodar na pasta errada e o engano mais
+        # provavel, e "nenhum ponto critico" soaria como codigo sem problema.
+        linhas.append("")
+        linhas.append("Nenhum arquivo Python foi encontrado. Confira se esta e a "
+                      "pasta do projeto.")
+        return "\n".join(linhas)
 
     if not resultado.grupos:
         linhas.append("")
@@ -192,15 +201,76 @@ def _configurar_saida():
             pass
 
 
+def _onde_nao_e_projeto(pasta):
+    """'na sua pasta pessoal' ou 'na raiz do disco'; None para as demais.
+
+    Todo terminal novo abre na pasta pessoal. Analisa-la por engano, ou
+    analisar a raiz do disco, varreria arquivos de fora do projeto, e a
+    pessoa ouviria um relatorio longo sobre outra coisa."""
+    try:
+        pasta = Path(pasta).resolve()
+    except OSError:
+        return None
+    try:
+        casa = Path.home().resolve()
+    except (OSError, RuntimeError):
+        casa = None
+    if pasta == casa:
+        return "na sua pasta pessoal"
+    if pasta == Path(pasta.anchor):
+        return "na raiz do disco"
+    return None
+
+
+def _problema_no_caminho(caminho, com_menu=False):
+    """Diz em palavras por que nada sera analisado, ou devolve None.
+
+    Sem caminho vale a pasta atual, menos a pasta pessoal e a raiz do disco.
+    Quem quer mesmo analisar uma delas informa o caminho ("analisar .")."""
+    if caminho is None:
+        if com_menu:
+            return None
+        try:
+            onde = _onde_nao_e_projeto(Path.cwd())
+        except OSError:
+            return ("Nao consegui ler a pasta atual do terminal. Digite analisar "
+                    "seguido do caminho do projeto.")
+        if onde is None:
+            return None
+        return (f"Voce esta {onde}, e nao na pasta de um projeto, entao nada foi "
+                "analisado. Entre na pasta do projeto com o comando cd e rode de "
+                "novo, digite analisar seguido do caminho do projeto, ou use "
+                "analisar --menu para escolher a pasta por um menu.")
+    alvo = Path(caminho)
+    if not alvo.exists():
+        return f"Nao encontrei {caminho}. Confira o nome e rode de novo."
+    if com_menu and not alvo.is_dir():
+        return (f"O menu comeca numa pasta, e {alvo.name} e um arquivo. "
+                "Para analisar o arquivo, rode sem --menu.")
+    if alvo.is_file() and alvo.suffix != ".py":
+        return f"{alvo.name} nao e um arquivo Python, terminado em .py."
+    return None
+
+
+def _avisar_erro(mensagem, falador=None):
+    """Imprime o erro e, com --falar, tambem o entrega ao NVDA."""
+    print(f"Erro: {mensagem}", file=sys.stderr)
+    if falador is not None:
+        try:
+            falador.falar(f"Erro: {mensagem}")
+        except ErroFala:
+            pass
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(
-        prog="python -m analisador",
+        prog="analisar",
         description="Analisa um arquivo ou projeto Python e lista os pontos "
                     "criticos com o contexto estrutural de cada um.",
     )
     parser.add_argument("caminho", nargs="?", default=None,
-                        help="arquivo .py ou pasta do projeto; sem ele, abre o "
-                             "menu de pastas")
+                        help="arquivo .py ou pasta do projeto; sem ele, analisa a "
+                             "pasta atual do terminal")
     parser.add_argument("--json", action="store_true",
                         help="imprime o resultado em JSON")
     parser.add_argument("--explicar", action="store_true",
@@ -225,12 +295,15 @@ def main(argv=None):
     parser.add_argument("--saida", default=None, metavar="ARQUIVO",
                         help="grava tambem o relatorio neste arquivo, em UTF-8; use no "
                              "lugar de '>' no PowerShell, que estraga os acentos")
+    parser.add_argument("--menu", action="store_true",
+                        help="escolhe a pasta por um menu, um nivel por vez; com "
+                             "caminho, o menu comeca nele")
     args = parser.parse_args(argv)
     if args.falar and args.json:
         parser.error("--falar nao se combina com --json: JSON nao serve para ouvir.")
-    if args.caminho is None and args.json:
-        parser.error("--json precisa do caminho do projeto: o menu de pastas "
-                     "fala com a pessoa e nao se combina com JSON.")
+    if args.menu and args.json:
+        parser.error("--menu nao se combina com --json: o menu conversa com a "
+                     "pessoa, e o JSON e para outros programas.")
 
     _configurar_saida()
 
@@ -248,24 +321,35 @@ def main(argv=None):
             print(f"Erro: {erro_fala}", file=sys.stderr)
             print("O relatorio sera entregue apenas como texto.", file=sys.stderr)
 
-    # Sem caminho, a pessoa escolhe a pasta pelo menu. Isso vem depois da
-    # conferencia do NVDA, para o erro de fala aparecer antes de qualquer pergunta.
+    # O caminho e conferido depois do NVDA: com --falar, o aviso de pasta
+    # errada tambem e falado, e nao so impresso.
+    problema = _problema_no_caminho(args.caminho, com_menu=args.menu)
+    if problema:
+        _avisar_erro(problema, falador)
+        return 1
+
+    # Sem caminho e sem --menu, vale a pasta atual do terminal. Com --menu, a
+    # pessoa escolhe a pasta, tambem depois do NVDA, para o erro de fala
+    # aparecer antes de qualquer pergunta.
     ignorar = None
     abrangencia = None
-    if args.caminho is None:
-        escolha = escolher_pasta(com_explicacao=args.explicar)
+    if args.menu:
+        escolha = escolher_pasta(inicio=args.caminho, com_explicacao=args.explicar)
         if escolha is None:
             return 0
         args.caminho = str(escolha.caminho)
         ignorar = escolha.ignorar
         abrangencia = escolha.abrangencia
+    elif args.caminho is None:
+        args.caminho = str(Path.cwd())
 
     resultado = analisar(args.caminho, ignorar=ignorar)
     resultado.abrangencia = abrangencia
 
     explicacao = None
     erro_explicacao = None
-    if args.explicar:
+    # Sem arquivo Python nao ha o que explicar, e o modelo nem e chamado.
+    if args.explicar and resultado.mapa.arquivos:
         try:
             explicador = criar_explicador("local", modelo=args.modelo, host=args.host,
                                           contexto=args.contexto)

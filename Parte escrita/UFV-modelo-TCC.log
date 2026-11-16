@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.11.3)  3 NOV 2026 15:01
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.11.9)  9 NOV 2026 15:25
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1562,20 +1562,20 @@ LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 2
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 ) [8{/usr/share/texmf/fonts/enc/dvips/lm/lm-ts1.enc}] [9] [10
 
-]
-<fluxograma_NVDA.png, id=225, 723.70375pt x 648.4225pt>
+] [11]
+<fluxograma_NVDA.png, id=236, 723.70375pt x 648.4225pt>
 File: fluxograma_NVDA.png Graphic file (type png)
 <use fluxograma_NVDA.png>
 Package pdftex.def Info: fluxograma_NVDA.png  used on input line 286.
 (pdftex.def)             Requested size: 318.49861pt x 285.36613pt.
- [11] [12 <./fluxograma_NVDA.png>] [13] [14] [15]
+ [12 <./fluxograma_NVDA.png>] [13] [14] [15]
 [16] [17
 
-] [18] [19] [20
+] [18] [19] [20] [21
 
 ]
 LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 4
-04.
+05.
  (/usr/share/texmf/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
@@ -1583,25 +1583,25 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `lmtt' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
- [21]
-[22{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/share/texmf/fonts/e
-nc/dvips/lm/lm-rm.enc}] (./figura_arquitetura.tikz) [23] [24]
-Underfull \hbox (badness 10000) in paragraph at lines 481--481
+
+[22] [23{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/share/texmf/fo
+nts/enc/dvips/lm/lm-rm.enc}] (./figura_arquitetura.tikz) [24] [25] [26]
+Underfull \hbox (badness 10000) in paragraph at lines 488--488
 []|\T1/lmr/m/n/12 (+20) Local (pa-
  []
 
-[25]
+[27] [28]
 LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <14.4> not available
-(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 498.
- [26] [27] [28] [29
+(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 505.
+ [29] [30] [31] [32
 
-] [30] [31
+] [33] [34
 
-] [32] [33
+] [35] [36
 
-] [34] [35
+] [37] [38
 
-] [36] [37]
+] [39] [40] [41]
 \tf@lof=\write6
 \openout6 = `UFV-modelo-TCC.lof'.
 
@@ -1619,13 +1619,13 @@ Package logreq Info: Writing requests to 'UFV-modelo-TCC.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 36365 strings out of 476089
- 680505 string characters out of 5793232
- 1952975 words of memory out of 5000000
- 57492 multiletter control sequences out of 15000+600000
- 633548 words of font info for 176 fonts, out of 8000000 for 9000
+ 36390 strings out of 476089
+ 680905 string characters out of 5793232
+ 1956975 words of memory out of 5000000
+ 57503 multiletter control sequences out of 15000+600000
+ 634342 words of font info for 181 fonts, out of 8000000 for 9000
  61 hyphenation exceptions out of 8191
- 99i,12n,107p,1555b,4319s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 99i,13n,107p,1555b,4319s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texmf/fonts/type1/public/lm/lmbx12.pfb></usr/share/texmf/fonts/ty
 pe1/public/lm/lmr10.pfb></usr/share/texmf/fonts/type1/public/lm/lmr12.pfb></usr
 /share/texmf/fonts/type1/public/lm/lmri10.pfb></usr/share/texmf/fonts/type1/pub
@@ -1634,10 +1634,10 @@ e/texmf/fonts/type1/public/lm/lmss17.pfb></usr/share/texmf/fonts/type1/public/l
 m/lmssbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsso12.pfb></usr/share/
 texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/texmf/fonts/type1/public/lm/
 lmtt10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt12.pfb>
-Output written on UFV-modelo-TCC.pdf (38 pages, 451035 bytes).
+Output written on UFV-modelo-TCC.pdf (42 pages, 459812 bytes).
 PDF statistics:
- 878 PDF objects out of 1000 (max. 8388607)
- 782 compressed objects within 8 object streams
- 126 named destinations out of 1000 (max. 500000)
- 42354 words of extra memory for PDF output out of 42996 (max. 10000000)
+ 912 PDF objects out of 1000 (max. 8388607)
+ 808 compressed objects within 9 object streams
+ 131 named destinations out of 1000 (max. 500000)
+ 44410 words of extra memory for PDF output out of 51595 (max. 10000000)
 

@@ -19,24 +19,25 @@
 \contentsline {section}{\numberline {3.3}Diretrizes de Acessibilidade em Ambientes de Desenvolvimento Integrado para Estudantes Cegos}{18}{section.3.3}%
 \contentsline {section}{\numberline {3.4}Sumarização Automática de Código com Modelos de Linguagem}{19}{section.3.4}%
 \contentsline {section}{\numberline {3.5}Síntese e posicionamento}{19}{section.3.5}%
-\contentsline {chapter}{\chapternumberline {4}Métodos}{20}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Revisão e Análise da Literatura}{20}{section.4.1}%
-\contentsline {section}{\numberline {4.2}Definição de Requisitos e Critérios}{20}{section.4.2}%
-\contentsline {section}{\numberline {4.3}Estratégia de Geração de Explicações}{21}{section.4.3}%
-\contentsline {section}{\numberline {4.4}Desenvolvimento do Protótipo}{22}{section.4.4}%
-\contentsline {section}{\numberline {4.5}Seleção dos Modelos de Linguagem}{25}{section.4.5}%
-\contentsline {section}{\numberline {4.6}Validação Técnica e Conformidade com as Regras de Acessibilidade}{25}{section.4.6}%
-\contentsline {subsection}{\numberline {4.6.1}Testes Automatizados}{26}{subsection.4.6.1}%
-\contentsline {subsection}{\numberline {4.6.2}Integração com o NVDA por meio do \textit {NVDA Controller Client}}{26}{subsection.4.6.2}%
-\contentsline {subsection}{\numberline {4.6.3}Verificação Automática das Explicações}{27}{subsection.4.6.3}%
-\contentsline {subsection}{\numberline {4.6.4}Comparação entre Modelos}{28}{subsection.4.6.4}%
-\contentsline {subsection}{\numberline {4.6.5}Avaliação Exploratória com Usuários}{28}{subsection.4.6.5}%
-\contentsline {chapter}{\chapternumberline {5}Resultados Parciais e Resultados Esperados}{29}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Resultados Parciais}{29}{section.5.1}%
-\contentsline {section}{\numberline {5.2}Resultados Esperados}{29}{section.5.2}%
-\contentsline {chapter}{\chapternumberline {6}Limitações e Trabalhos Futuros}{31}{chapter.6}%
-\contentsline {section}{\numberline {6.1}Limitações}{31}{section.6.1}%
-\contentsline {section}{\numberline {6.2}Trabalhos Futuros}{32}{section.6.2}%
-\contentsline {chapter}{\chapternumberline {7}Cronograma}{33}{chapter.7}%
+\contentsline {chapter}{\chapternumberline {4}Métodos}{21}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Revisão e Análise da Literatura}{21}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Definição de Requisitos e Critérios}{21}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Estratégia de Geração de Explicações}{22}{section.4.3}%
+\contentsline {section}{\numberline {4.4}Desenvolvimento do Protótipo}{24}{section.4.4}%
+\contentsline {section}{\numberline {4.5}Seleção dos Modelos de Linguagem}{27}{section.4.5}%
+\contentsline {section}{\numberline {4.6}Validação Técnica e Conformidade com as Regras de Acessibilidade}{28}{section.4.6}%
+\contentsline {subsection}{\numberline {4.6.1}Testes Automatizados}{28}{subsection.4.6.1}%
+\contentsline {subsection}{\numberline {4.6.2}Integração com o NVDA por meio do \textit {NVDA Controller Client}}{29}{subsection.4.6.2}%
+\contentsline {subsection}{\numberline {4.6.3}Verificação Automática das Explicações}{29}{subsection.4.6.3}%
+\contentsline {subsection}{\numberline {4.6.4}Comparação entre Modelos}{30}{subsection.4.6.4}%
+\contentsline {subsection}{\numberline {4.6.5}Avaliação Exploratória com Usuários}{30}{subsection.4.6.5}%
+\contentsline {section}{\numberline {4.7}Uso de Inteligência Artificial Generativa nesta pesquisa}{31}{section.4.7}%
+\contentsline {chapter}{\chapternumberline {5}Resultados Parciais e Resultados Esperados}{32}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Resultados Parciais}{32}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Resultados Esperados}{33}{section.5.2}%
+\contentsline {chapter}{\chapternumberline {6}Limitações e Trabalhos Futuros}{34}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Limitações}{34}{section.6.1}%
+\contentsline {section}{\numberline {6.2}Trabalhos Futuros}{35}{section.6.2}%
+\contentsline {chapter}{\chapternumberline {7}Conclusão}{36}{chapter.7}%
 \vspace {\cftbeforepartskip }
-\contentsline {chapter}{Refer\^encias}{35}{section*.8}%
+\contentsline {chapter}{Refer\^encias}{38}{section*.8}%

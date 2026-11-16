@@ -18,11 +18,13 @@ consulte-o para o raciocinio por tras de cada decisao.
   locais e abertos.
 - **Fase 4, fala via NVDA (so Windows): implementada, NAO validada com o
   NVDA real.** Ver "Fala via NVDA (Windows)".
-- **Menu de pastas (Fase 4, primeira parte): funcionando.** Sem caminho na
-  linha de comando, o programa pergunta qual pasta analisar, um nivel por
-  vez, sem digitar caminho. Coberto por testes com entrada falsa; **ainda
-  nao testado com o NVDA real nem com uma pessoa cega** (ver "Menu de
-  pastas" e "O que foi e o que nao foi validado").
+- **Comando `analisar` e menu de pastas (Fase 4, primeira parte):
+  funcionando.** A pessoa entra na pasta do projeto com `cd` e digita
+  `analisar`: sem caminho, vale a pasta atual. O `instalar_comando.ps1` deixa
+  o comando disponivel em qualquer pasta do Windows, e `--menu` escolhe a
+  pasta por um menu, um nivel por vez. Coberto por testes; **ainda nao
+  testado com o NVDA real nem com uma pessoa cega** (ver "Comando analisar
+  (Windows)" e "O que foi e o que nao foi validado").
 - Fase 3 (formatacao acessivel definitiva) e navegacao pelos resultados
   (proxima regiao, repetir, explicacao sob demanda): pastas criadas com
   docstrings, sem implementacao.
@@ -78,22 +80,54 @@ O `>` do PowerShell regrava a saida com a pagina de codigo do console e
 estraga os acentos ("Inferência" vira "Infer├¬ncia"); `--saida` grava em UTF-8
 direto do Python. Arquivos `saida_*` ficam fora do git.
 
-## Menu de pastas (sem digitar caminho)
+## Comando analisar (Windows)
 
-Sem caminho, o programa abre um menu que faz a navegacao pela pessoa. No
-Windows, o atalho `analisar.cmd` (na pasta `prototipo`) ativa o ambiente
-sozinho e dispensa o `PYTHONPATH`:
+O jeito mais simples de usar: entrar na pasta do projeto e digitar so o
+comando. Sem caminho, a pasta atual do terminal e analisada.
+
+Uma vez so, na pasta `prototipo`, depois do `preparar_windows.ps1`:
 
 ```powershell
-cd prototipo
-.\analisar                      # abre o menu
-.\analisar --explicar           # menu e explicacao do modelo
-.\analisar caminho\do\projeto   # analisa direto, sem menu
+powershell -ExecutionPolicy Bypass -File .\instalar_comando.ps1
 ```
 
-Para chamar `analisar` de qualquer pasta, acrescente a pasta `prototipo` ao
-PATH do Windows (configuracao do usuario; o prototipo nao mexe nisso). Em
-macOS e Linux use `PYTHONPATH=. python -m analisador` sem caminho.
+O script acrescenta a pasta `prototipo` ao PATH do seu usuario, sem pedir
+administrador; rodar de novo nao duplica a entrada, e `-Remover` desfaz.
+Feche o terminal e abra um novo (no VS Code, feche e abra o VS Code). A
+partir dai, de qualquer pasta:
+
+```powershell
+cd Documents\meu_projeto
+analisar                        # analisa a pasta atual
+analisar --falar                # e fala o relatorio pelo NVDA
+analisar --explicar             # com a explicacao do modelo
+analisar caminho\do\projeto     # analisa outra pasta, sem sair desta
+analisar --menu                 # escolhe a pasta por um menu
+```
+
+Sem instalar, o mesmo atalho funciona de dentro da pasta `prototipo`:
+`.\analisar caminho\do\projeto`. O `analisar.cmd` usa o `.venv` sozinho,
+dispensa o `PYTHONPATH` e liga o `PYTHONSAFEPATH` (Python 3.11 ou mais novo),
+para que um arquivo do projeto analisado, como um `json.py`, nao rode no
+lugar de uma biblioteca do Python.
+
+Na pasta pessoal, onde todo terminal novo abre, e na raiz do disco,
+`analisar` sem caminho nao analisa nada e diz como seguir: a varredura
+passaria por arquivos de fora do projeto. Para analisar uma delas mesmo
+assim, informe o caminho (`analisar .`). Caminho que nao existe e arquivo
+que nao e `.py` tambem sao ditos em palavras, com codigo de saida 1, e uma
+pasta sem Python gera o aviso "Nenhum arquivo Python foi encontrado", sem
+chamar o modelo.
+
+Em macOS e Linux nao ha instalador: rode da pasta `prototipo` com
+`PYTHONPATH=. python -m analisador caminho/do/projeto`, ou com `--menu`.
+
+### Menu de pastas (`--menu`)
+
+Para quem prefere escolher a pasta sem digitar caminho. `analisar --menu`
+comeca na pasta atual e oferece primeiro o ultimo projeto analisado pelo
+menu; `analisar --menu caminho` comeca na pasta indicada. `--menu` nao se
+combina com `--json`.
 
 Cada tela diz onde a pessoa esta, quantas pastas com codigo Python existem ali
 e lista no maximo sete, numeradas. Pastas sem Python e pastas de ferramenta
@@ -182,13 +216,13 @@ dependem do plano: ver ollama.com/pricing e ollama.com/settings/usage.
 ## Fala via NVDA (Windows)
 
 Requisitos: Windows, Python e NVDA com a mesma arquitetura da DLL, NVDA
-aberto e a DLL `nvdaControllerClient.dll` do NV Access (LGPL 2.1, por isso
+instalado e a DLL `nvdaControllerClient.dll` do NV Access (LGPL 2.1, por isso
 fora do git). Passo a passo em `bibliotecas/LEIA-ME.md`.
 
 ```powershell
-python -m analisador caminho\do\projeto --falar
-python -m analisador caminho\do\projeto --explicar --falar
-python -m analisador caminho\do\projeto --falar --dll C:\outro\nvdaControllerClient.dll
+analisar --falar                    # na pasta do projeto
+analisar caminho\do\projeto --explicar --falar
+analisar --falar --dll C:\outro\nvdaControllerClient.dll
 ```
 
 O relatorio e impresso como sempre e tambem enviado ao NVDA em uma unica
@@ -196,7 +230,15 @@ chamada. O NVDA e conferido **antes** da analise e do modelo, para o erro
 aparecer em segundos. Se o NVDA, a DLL ou o Windows faltarem, o erro e
 dito em palavras, o relatorio sai so como texto e o codigo de saida e 3
 (codigo 2 continua sendo falha do modelo e tem prioridade). `--falar` nao
-se combina com `--json`.
+se combina com `--json`. Com `--falar`, o aviso de pasta errada tambem e
+falado.
+
+Se o NVDA estiver instalado mas fechado, `--falar` o abre e espera ate 20
+segundos que ele responda, dizendo em palavras o que esta fazendo ("Abrindo
+o NVDA, aguarde...", "NVDA aberto."). O `nvda.exe` e procurado em
+`Program Files\NVDA` e `Program Files (x86)\NVDA`; para um NVDA portatil,
+indique o caminho na variavel `NVDA_EXE`. Se o Windows indicar que outro
+leitor de tela esta ativo, o NVDA nao e aberto, para nao falarem duas vozes.
 
 Fora do Windows nao ha falador: o NVDA nao existe em macOS nem em Linux.
 A interface `Falador` (`analisador/nvda/base.py`) deixa espaco para outro
@@ -204,21 +246,32 @@ sistema de fala, ainda nao implementado.
 
 ## O que foi e o que nao foi validado
 
-Validado por testes automatizados (170 testes, sem modelo, rede, NVDA nem
+Validado por testes automatizados (198 testes, sem modelo, rede, NVDA nem
 Windows): analise estatica, grafo de chamadas, montagem dos prompts,
-orquestracao, politica de falhas, CLI (com um LLM falso) e menu de pastas
-(com entrada falsa); cliente do
-Ollama contra um servidor HTTP falso que reproduz o formato documentado
-da API; falador do NVDA contra uma DLL falsa, busca da DLL e opcao
-`--falar` da CLI com um falador falso; chave de API da nuvem enviada so ao
-host `ollama.com`.
+orquestracao, politica de falhas, CLI (com um LLM falso), analise da pasta
+atual e avisos de caminho errado, e menu de pastas (com entrada falsa);
+cliente do Ollama contra um servidor HTTP falso que reproduz o formato
+documentado da API; falador do NVDA contra uma DLL falsa, busca da DLL e
+opcao `--falar` da CLI com um falador falso; chave de API da nuvem enviada
+so ao host `ollama.com`. Em 08/11/2026 os 198 passaram em Linux com Python
+3.12; com Python 3.10, o teste do `PYTHONSAFEPATH` e pulado, porque o
+recurso so existe a partir do 3.11.
 
 **Nao validado:**
 
-- Menu de pastas: nunca foi usado com o NVDA real nem por uma pessoa cega.
-  Sete itens por tela, texto sem acento e uma pergunta por vez sao decisoes
-  de projeto, nao resultados. Nao se sabe se a voz do NVDA le melhor com
-  acento. O `analisar.cmd` foi escrito mas nao executado no Windows.
+- Comando `analisar` e menu de pastas: nunca foram usados com o NVDA real
+  nem por uma pessoa cega. A pasta atual como padrao, sete itens por tela,
+  texto sem acento e uma pergunta por vez sao decisoes de projeto, nao
+  resultados. Nao se sabe se a voz do NVDA le melhor com acento. Em
+  08/11/2026, o `analisar.cmd` abriu o menu de pastas no Windows (entao o
+  padrao sem caminho); com o NVDA fechado, o erro foi dito e o menu seguiu so
+  em texto. O `instalar_comando.ps1` e a analise da pasta atual ainda nao
+  rodaram no Windows.
+- Abertura automatica do NVDA: a primeira tentativa real, em 08/11/2026,
+  falhou com o erro 740 ("A operacao solicitada requer elevacao"), porque o
+  NVDA era aberto por CreateProcess. Ele passou a ser aberto pelo ShellExecute,
+  como um atalho, e isso ainda precisa ser conferido no Windows, assim como o
+  tempo para responder e o indicador de outro leitor de tela ativo.
 - NVDA: em 18/10/2026 a DLL x64 carregou e `testIfRunning` respondeu com o
   NVDA aberto, e o autor informou que o NVDA esta funcionando. Ainda sem
   registro: a versao do NVDA; se o relatorio inteiro vai em uma chamada ou
@@ -228,7 +281,7 @@ host `ollama.com`.
   do NV Access manda conferir isso antes de enviar texto).
 - Nuvem do Ollama: uma execucao real em 18/10/2026 (gemma4:31b, host
   ollama.com, projeto_exemplo, duas regioes) funcionou. O nome do modelo, a
-  chave e o campo `think: false` foram aceitos, e a geracao levou 3,4
+  chave e o campo `think: false` foram aceitos, e a geracao levou 3,06
   segundos no total. O formato real do erro de chave recusada nao foi
   conferido.
 - Nenhum teste rodou contra um Ollama local. O formato de resposta de erro
@@ -267,7 +320,7 @@ analisador/
     local.py          ExplicadorLocal: Ollama, sem dependencia nova
   analise.py          orquestracao: parser + contexto + regras
   explicacao.py       orquestracao: visao geral + uma explicacao por regiao
-  __main__.py         runner: python -m analisador <caminho> [--explicar]
+  __main__.py         runner da linha de comando: analisar [caminho] [opcoes]
   formatacao/         Fase 3 - texto acessivel definitivo (vazio)
   nvda/
     base.py           interface Falador e erros
@@ -276,7 +329,9 @@ analisador/
     navegador.py      menu: um nivel por vez, filtro, escopo, confirmacao
     recentes.py       ultimos projetos analisados pelo menu
     texto.py          concordancia e nomes falaveis
-analisar.cmd         atalho do Windows: ativa o .venv e chama o analisador
+analisar.cmd          atalho do Windows: usa o .venv e chama o analisador
+instalar_comando.ps1  poe a pasta prototipo no PATH do usuario (-Remover desfaz)
+preparar_windows.ps1  prepara o .venv, roda os testes e confere o NVDA
 bibliotecas/          nvdaControllerClient.dll, baixada a parte (fora do git)
 testes/
   conftest.py                    fixtures e servidor Ollama falso
@@ -290,7 +345,8 @@ testes/
   test_prompts.py                conteudo dos prompts
   test_explicacao.py             orquestracao e CLI com LLM falso
   test_nvda.py                   falador do NVDA com DLL falsa e CLI --falar
-  test_navegador.py              menu de pastas, recentes, --saida e atalho .cmd
+  test_navegador.py              menu de pastas, recentes e --saida
+  test_comando.py                pasta atual, caminho errado, atalho .cmd e instalador
   fixtures/
     exemplo_funcionarios.py      fixture original, arquivo unico
     projeto_exemplo/             tres arquivos que se importam (secao 12)
@@ -346,6 +402,29 @@ testes/
 - **Reprodutibilidade.** Temperatura zero e semente fixa, registradas junto
   com o digest do modelo no `--json`. Nao garante saida identica entre
   versoes do Ollama ou hardwares diferentes.
+- **Sem caminho, vale a pasta atual; o menu e opcional.** A primeira versao
+  abria o menu sempre que faltava o caminho e, como o atalho so funcionava de
+  dentro da pasta `prototipo`, o menu comecava sempre nela. Em 08/11/2026, o
+  autor avaliou esse passo obrigatorio como pouco pratico: quem ja esta na
+  pasta do projeto, ou sabe o caminho, so precisa do comando. O menu ficou em
+  `--menu`, para quem prefere escolher sem digitar caminho.
+- **Pasta pessoal e raiz do disco so com pedido explicito.** Todo terminal
+  novo abre na pasta pessoal; analisa-la por engano varreria arquivos de
+  fora do projeto, e a pessoa ouviria um relatorio longo sobre outra coisa.
+  Com o caminho informado (`analisar .`), a analise acontece.
+- **Pasta sem Python nao vira "nenhum ponto critico".** Com a pasta atual
+  como padrao, rodar na pasta errada e o engano mais provavel, e "Nenhum
+  ponto critico encontrado" soaria como codigo sem problema. O relatorio diz
+  que nao achou arquivo Python, e o modelo nem e chamado.
+- **O projeto analisado nao roda codigo dentro da ferramenta.** Com
+  `python -m`, o Python poe a pasta atual na frente das bibliotecas, e um
+  `json.py` do projeto rodaria no lugar do `json` padrao. Como o comando
+  agora roda de dentro do projeto, o `analisar.cmd` liga o `PYTHONSAFEPATH`;
+  um teste confere a protecao e mostra o problema sem ela.
+- **O instalador muda so o PATH do usuario e preserva o que ja estava la.**
+  Sem administrador. O PATH e lido do registro sem expandir variaveis
+  (`%USERPROFILE%`) e regravado com o mesmo tipo; rodar de novo nao duplica,
+  e `-Remover` desfaz.
 - **Menu de pastas: um nivel por vez, nunca a arvore.** Quem ouve uma
   arvore inteira nao consegue "passar o olho": a tela diz onde a pessoa esta,
   quantas pastas com codigo existem ali e lista no maximo sete. O que e
@@ -364,4 +443,8 @@ testes/
   redirecionamento do PowerShell. O Python grava o arquivo em UTF-8 direto.
 - **O relatorio diz o nome da pasta, nao o caminho.** "Analise de ." seria
   falado como "analise de ponto"; o nome vem sem sublinhado e sem hifen.
-
+- **NVDA aberto pela ferramenta, mas nunca por cima de outro leitor.** Quem
+  usa leitor de tela ja tem um aberto para digitar o comando. O NVDA fechado
+  costuma ser outro caso: alguem que enxerga demonstrando a ferramenta, ou um
+  NVDA que fechou. Por isso `--falar` abre o NVDA so quando o Windows nao
+  indica outro leitor de tela ativo, e os testes nunca abrem o NVDA real.

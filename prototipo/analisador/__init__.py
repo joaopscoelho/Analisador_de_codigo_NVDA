@@ -8,7 +8,7 @@ Proposta de Evolucao"):
 - pontos_criticos/  Fase 1: regras deterministicas e agrupamento
 - contexto/         Fase 2: mapa estrutural e grafo local de chamadas
 - analise.py        orquestracao das fases deterministicas
-- llm/              Fase 2: explicacao via API do Claude
+- llm/              Fase 2: explicacao por modelo local ou em nuvem (Ollama)
 - formatacao/       Fase 3: texto acessivel
 - nvda/, cli/       Fase 4: fala via NVDA e navegacao por etapas
 """

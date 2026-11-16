@@ -151,4 +151,8 @@ if ($dlls -and $processo) {
 }
 
 Escrever ""
+Escrever "Para usar o comando analisar em qualquer pasta, rode uma vez:"
+Escrever "powershell -ExecutionPolicy Bypass -File .\instalar_comando.ps1"
+
+Escrever ""
 Escrever ("FIM. Registro salvo em: " + $log)

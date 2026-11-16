@@ -87,7 +87,7 @@
 
 % O preambulo deve conter o tipo do trabalho, o objetivo,
 % o nome da instituição e a área de concentração
-\preambulo{Monografia apresentada à Universidade Federal de Viçosa, como parte das exigências para a aprovação na disciplina Trabalho de Conclusão de Curso I}
+\preambulo{Monografia apresentada à Universidade Federal de Viçosa, como parte das exigências para a aprovação na disciplina Trabalho de Conclusão de Curso II}
 % ---
 
 % ---
@@ -226,7 +226,7 @@
 %Modifique a estrutura dos capítulos e seções de acordo com a necessidade do seu trabalho
 \chapter{Introdução}\label{sec:introducao}
 
-A Tecnologia da Informação ocupa um papel cada vez mais relevante na sociedade contemporânea, tornando o desenvolvimento de software uma atividade estratégica em diversos contextos. Nesse cenário, pesquisas têm investigado as dificuldades enfrentadas por pessoas com deficiência visual na programação e nos ambientes de desenvolvimento \cite{acad54431201,latinoware20457}.
+O desenvolvimento de software ainda impõe barreiras a pessoas com deficiência visual, e pesquisas têm investigado as dificuldades que elas enfrentam na programação e nos ambientes de desenvolvimento \cite{acad54431201,latinoware20457}.
 
 \textcite{latinoware20457} aplicaram um questionário a dez desenvolvedores com deficiência visual e avaliaram, com verificadores automáticos de acessibilidade, quatro ferramentas utilizadas no desenvolvimento de software; os respondentes relataram dificuldades como a navegação entre os arquivos de um projeto, a depuração de programas e a localização de erros de sintaxe. Em um estudo de caso em uma disciplina de programação, \textcite{acad54431201} observaram que o leitor de tela, isoladamente, não é suficiente para compreender a estrutura do código e que as mensagens de erro de compilação exibidas em um painel da IDE não eram lidas. Esses resultados reforçam a importância de soluções que auxiliem não apenas a edição do código, mas também a sua interpretação.
 
@@ -238,7 +238,7 @@ Além disso, entre os trabalhos analisados, grande parte concentra-se na adapta�
 
 Diante desse cenário, este trabalho propõe e implementa um protótipo, escrito em Python, que combina a análise estática do código-fonte, responsável por identificar os pontos críticos do código de forma determinística, com modelos de linguagem de grande porte, responsáveis por redigir explicações estruturadas alinhadas à regra de negócio. As explicações seguem regras de acessibilidade definidas no trabalho, como frases curtas, ausência de tabelas e de símbolos decorativos e marcação explícita do que é dedução, e são entregues ao programador por meio do leitor de tela NVDA.
 
-O restante deste documento está organizado da seguinte forma. O Capítulo~\ref{sec:refteorico} apresenta o referencial teórico sobre acessibilidade na programação, leitores de tela, modelos de linguagem de grande porte, engenharia de prompts e prototipação. O Capítulo~\ref{sec:TrabRel} discute os trabalhos relacionados. O Capítulo~\ref{sec:metodos} descreve os métodos, incluindo a arquitetura do protótipo, a seleção dos modelos de linguagem e a estratégia de validação. O Capítulo~\ref{sec:resultEsperados} apresenta os resultados parciais e os resultados esperados, o Capítulo~\ref{sec:limitacoes} discute as limitações e os trabalhos futuros e o Capítulo~\ref{sec:cronograma} apresenta o cronograma e a análise de exequibilidade.
+O restante deste documento está organizado da seguinte forma. O Capítulo~\ref{sec:refteorico} apresenta o referencial teórico sobre acessibilidade na programação, leitores de tela, modelos de linguagem de grande porte, engenharia de prompts e prototipação. O Capítulo~\ref{sec:TrabRel} discute os trabalhos relacionados. O Capítulo~\ref{sec:metodos} descreve os métodos, incluindo a arquitetura do protótipo, a seleção dos modelos de linguagem e a estratégia de validação. O Capítulo~\ref{sec:resultEsperados} apresenta os resultados parciais e os resultados esperados, o Capítulo~\ref{sec:limitacoes} discute as limitações e os trabalhos futuros e o Capítulo~\ref{sec:conclusao} apresenta a conclusão.
 
 \section{Objetivos}\label{sec:objetivos}
 
@@ -265,7 +265,7 @@ O referencial teórico deste trabalho está fundamentado em estudos sobre acessi
 
 \section{Acessibilidade na programação}\label{sec:AcessComputacao}
 
-A acessibilidade na computação diz respeito à possibilidade de que sistemas, ferramentas e tecnologias sejam utilizados de forma autônoma por diferentes perfis de usuários, incluindo pessoas com deficiência. Na Engenharia de Software, esse conceito não se restringe às aplicações destinadas ao usuário final, pois alcança também os ambientes e as ferramentas empregados no próprio desenvolvimento, como mostram os trabalhos que investigam ambientes de desenvolvimento acessíveis \cite{latinoware37693,latinoware6969}.
+A Lei Brasileira de Inclusão define acessibilidade como a possibilidade e a condição de alcance para utilização, com segurança e autonomia, de espaços, transportes, informação e comunicação, inclusive seus sistemas e tecnologias, por pessoa com deficiência ou com mobilidade reduzida \cite{brasil2015lbi}. Na computação, isso significa que sistemas, ferramentas e tecnologias possam ser utilizados de forma autônoma por diferentes perfis de usuários, incluindo pessoas com deficiência. Na Engenharia de Software, esse conceito não se restringe às aplicações destinadas ao usuário final, pois alcança também os ambientes e as ferramentas empregados no próprio desenvolvimento, como mostram os trabalhos que investigam ambientes de desenvolvimento acessíveis \cite{latinoware37693,latinoware6969}.
 
 As diretrizes WCAG (\textit{Web Content Accessibility Guidelines}) organizam-se em quatro princípios: perceptível, operável, compreensível e robusto \cite{w3c2024wcag22}. Embora tenham sido propostas para o conteúdo web, \textcite{latinoware6969} utilizam as diretrizes WCAG, juntamente com as diretrizes WAI-ARIA, UAAG e ATAG, como critérios técnicos para avaliar a acessibilidade de ambientes de desenvolvimento, verificando se as ferramentas são perceptíveis, operáveis e compatíveis com o leitor de tela NVDA.
 
@@ -275,17 +275,17 @@ Dessa forma, promover a acessibilidade na programação não significa apenas ad
 
 \section{Tecnologias Assistivas e Leitores de Tela}\label{sec:TecAssistivas}
 
-As tecnologias assistivas desempenham papel fundamental na promoção da acessibilidade digital para pessoas com deficiência visual. Entre elas, os leitores de tela são os recursos de uso mais frequente: na pesquisa de \textcite{latinoware20457}, a maioria dos respondentes com deficiência visual declarou utilizar um leitor de tela. Esses programas interpretam as informações exibidas pelo sistema operacional e as apresentam em saída sonora, por meio de voz sintetizada, ou tátil, por meio de displays Braille \cite{nvaccess2026guia}.
+A Lei Brasileira de Inclusão define tecnologia assistiva, ou ajuda técnica, como os produtos, equipamentos, dispositivos, recursos, metodologias, estratégias, práticas e serviços que objetivem promover a funcionalidade da pessoa com deficiência ou com mobilidade reduzida, visando à sua autonomia, independência, qualidade de vida e inclusão social \cite{brasil2015lbi}. Para pessoas com deficiência visual, os leitores de tela são os recursos de uso mais frequente: na pesquisa de \textcite{latinoware20457}, a maioria dos respondentes com deficiência visual declarou utilizar um leitor de tela. Esses programas interpretam as informações exibidas pelo sistema operacional e as apresentam em saída sonora, por meio de voz sintetizada, ou tátil, por meio de displays Braille \cite{nvaccess2026guia}.
 
 O NVDA (\textit{NonVisual Desktop Access}) é um leitor de tela gratuito e de código aberto para o sistema operacional Windows, desenvolvido pela NV Access \cite{nvaccess2026guia}. Na pesquisa de \textcite{latinoware20457}, foi o leitor de tela mais citado pelos respondentes (cinco dos que declararam usar leitor de tela), e \textcite{latinoware6969} o adotaram como leitor de tela nos testes de acessibilidade de ambientes de desenvolvimento. Por essa combinação de gratuidade, uso entre o público-alvo e disponibilidade de uma interface para integração com outros programas, o NVDA foi escolhido como leitor de tela de referência para o protótipo.
 
-O NVDA oferece suporte às interfaces de acessibilidade \textit{Microsoft Active Accessibility} (MSAA), \textit{IAccessible2} (IA2), \textit{UI Automation} (UIA) e \textit{Java Access Bridge}, que lhe permitem obter informações dos aplicativos. Para documentos e páginas web, disponibiliza o modo de navegação (\textit{browse mode}), no qual o usuário percorre o conteúdo com teclas de atalho que saltam entre títulos, \textit{links}, campos de formulário e outros elementos; a saída é apresentada por sintetizadores de voz, como o eSpeak NG e as vozes SAPI e OneCore, e por displays Braille \cite{nvaccess2026guia}. A Figura~\ref{fig:ciclo-nvda} resume esse funcionamento: um evento do sistema operacional, como o pressionamento de uma tecla ou a mudança de foco, é capturado por APIs de acessibilidade; o leitor de tela identifica o tipo de conteúdo, utilizando o modo de navegação para páginas web e documentos ou acessando diretamente os elementos da interface em aplicações desktop; e as informações processadas são apresentadas por sintetizador de voz ou display Braille, quando disponível. O ciclo se repete a cada novo evento gerado pelo sistema.
+O NVDA oferece suporte às interfaces de acessibilidade \textit{Microsoft Active Accessibility} (MSAA), \textit{IAccessible2} (IA2), \textit{UI Automation} (UIA) e \textit{Java Access Bridge}, que lhe permitem obter informações dos aplicativos. Para documentos e páginas web, disponibiliza o modo de navegação (\textit{browse mode}), no qual o usuário percorre o conteúdo com teclas de atalho que saltam entre títulos, \textit{links}, campos de formulário e outros elementos; a saída é apresentada por sintetizadores de voz, como o eSpeak NG e as vozes SAPI e OneCore, e por displays Braille \cite{nvaccess2026guia}. A Figura~\ref{fig:ciclo-nvda} resume esse funcionamento: um evento do sistema operacional, como o pressionamento de uma tecla ou a mudança de foco, é capturado por APIs de acessibilidade; o leitor de tela identifica o tipo de conteúdo, utilizando o modo de navegação para páginas web e documentos, representado no diagrama como \textit{Buffer Virtual}, ou acessando diretamente os elementos da interface em aplicações desktop, representado como Foco Direto; e as informações processadas são apresentadas por sintetizador de voz ou display Braille, quando disponível. O ciclo se repete a cada novo evento gerado pelo sistema.
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=.7\linewidth]{fluxograma_NVDA.png}
-  \caption{Diagrama simplificado do ciclo de execução de um leitor de tela, evidenciando a captura de eventos por APIs de acessibilidade (MSAA, UIA, IA2), a divisão do processamento por tipo de conteúdo (\textit{Buffer Virtual} e Foco Direto) e as interfaces de saída de áudio e Braille}
-  \legend{Fonte: Elaborado pelo autor.}
+  \caption{Ciclo simplificado de execução de um leitor de tela}
+  \legend{Fonte: Adaptado de \cite{latinoware6969}.}
   \label{fig:ciclo-nvda}
 \end{figure}
 
@@ -309,7 +309,7 @@ Nesses estudos, o foco recai sobre a correção e a cobertura de tarefas de prog
 
 \subsection{Modelos Abertos, Execução Local e Janela de Contexto}\label{sec:modelosabertos}
 
-Além dos modelos acessíveis apenas por meio de serviços de terceiros, há famílias de modelos com pesos disponibilizados publicamente, que podem ser executadas em equipamento próprio. O Qwen3, por exemplo, reúne modelos densos e de mistura de especialistas de 0,6 a 235 bilhões de parâmetros, é distribuído sob a licença Apache~2.0, amplia o suporte de 29 para 119 idiomas e dialetos e integra, em um único modelo, os modos de raciocínio e de resposta rápida \cite{yang2025qwen3}. O GPT-OSS, primeira família de pesos abertos da OpenAI desde o GPT-2, foi avaliado por \textcite{bi2025gptoss}, que o consideraram relativamente forte na geração de código e mais fraco em tarefas multilíngues, o que é relevante para explicações em português. A página do Gemma~4, do Google DeepMind, na biblioteca do Ollama descreve versões que variam de 2 bilhões (parâmetros efetivos) a 31 bilhões de parâmetros, com janelas de contexto de 128 mil a 256 mil \textit{tokens}, modos de raciocínio configuráveis e uma variante hospedada em nuvem \cite{ollama2026gemma4}. Já o GPT-4o, modelo multimodal da OpenAI, é descrito como equivalente ao GPT-4 Turbo em texto e código em inglês e como mais rápido e mais barato na API \cite{openai2024gpt4o}.
+Além dos modelos acessíveis apenas por meio de serviços de terceiros, há famílias de modelos com pesos disponibilizados publicamente, que podem ser executadas em equipamento próprio. O Qwen3, por exemplo, reúne modelos densos e de mistura de especialistas de 0,6 a 235 bilhões de parâmetros, é distribuído sob a licença Apache~2.0, amplia o suporte de 29 para 119 idiomas e dialetos e integra, em um único modelo, os modos de raciocínio e de resposta rápida \cite{yang2025qwen3}. O GPT-OSS, primeira família de pesos abertos da OpenAI desde o GPT-2, foi avaliado por \textcite{bi2025gptoss}, que o consideraram relativamente forte na geração de código e mais fraco em tarefas multilíngues, o que é relevante para explicações em português. A página do Gemma~4, do Google DeepMind, na biblioteca do Ollama descreve versões que variam de 2 bilhões (parâmetros efetivos) a 31 bilhões de parâmetros, com janelas de contexto de 128 mil a 256 mil \textit{tokens}, modos de raciocínio configuráveis e uma variante hospedada em nuvem \cite{ollama2026gemma4}. Em contraste, o GPT-4o, previsto na proposta inicial deste trabalho (Seção~\ref{sec:modelos}), é um modelo multimodal da OpenAI oferecido por meio de API, descrito como equivalente ao GPT-4 Turbo em texto e código em inglês e como mais rápido e mais barato na API \cite{openai2024gpt4o}.
 
 O Ollama permite executar esses modelos localmente e também acessar modelos hospedados em seus servidores por meio de uma chave de API; nesse caso, segundo a documentação, os \textit{prompts} e as respostas são processados apenas para atender às requisições e não são utilizados para treinar modelos \cite{ollama2026nuvem}. A execução local mantém o código analisado no equipamento do usuário, ao passo que o uso da nuvem o transmite a terceiros, o que precisa ser considerado ao analisar código privado.
 
@@ -331,7 +331,7 @@ Além disso, a forma de entrega da saída dos assistentes de Inteligência Artif
 
 \section{Prototipação}\label{sec:Prototipacao}
 
-A prototipação é uma técnica amplamente empregada no desenvolvimento de software. Segundo \textcite{latinoware7985}, um protótipo é uma versão preliminar de um sistema, utilizada para demonstrar conceitos, testar alternativas de projeto e compreender melhor o problema; entre os benefícios descritos estão validar cedo o projeto e a usabilidade, obter retorno dos usuários, esclarecer requisitos, reduzir o risco de mudanças de requisitos, melhorar a comunicação entre as partes interessadas e avaliar alternativas a baixo custo.
+Segundo \textcite{latinoware7985}, um protótipo é uma versão preliminar de um sistema, utilizada para demonstrar conceitos, testar alternativas de projeto e compreender melhor o problema; entre os benefícios descritos estão validar cedo o projeto e a usabilidade, obter retorno dos usuários, esclarecer requisitos, reduzir o risco de mudanças de requisitos, melhorar a comunicação entre as partes interessadas e avaliar alternativas a baixo custo.
 
 Os autores distinguem protótipos de baixa e de alta fidelidade. Os de baixa fidelidade, como esboços e modelos em papel, exigem menos preparo e são mais fáceis de alterar durante os testes; os de alta fidelidade, em geral construídos com ferramentas digitais, oferecem interação mais realista e permitem avaliar fluxos de trabalho e detalhes visuais \cite{latinoware7985}. Em uma revisão rápida de 30 estudos primários, \textcite{latinoware7985} não identificaram estudos que investiguem a prototipação para a validação de acessibilidade, o que indica espaço para trabalhos como este.
 
@@ -350,15 +350,15 @@ Entre as limitações, a amostra é muito pequena, a análise é predominantemen
 
 \section{WAE - Web Accessibility Engine: Uma Ferramenta de Transpilação Acessível e Estruturada para Programadores Cegos ou de Baixa Visão}
 
-\textcite{latinoware40920} apresentam o WAE (\textit{Web Accessibility Engine}), ferramenta desenvolvida para facilitar a prototipação e a construção de páginas web estáticas por programadores cegos ou com baixa visão. A pesquisa incluiu uma revisão da literatura que levou à escolha do paradigma de codificação acessível \textit{Grid Coding} e da linguagem YAML como bases do projeto. A acessibilidade das páginas geradas foi avaliada com o Avaliador e Simulador de Acessibilidade em Sítios (ASES), e os autores reportam que a maioria dos componentes criados pelo WAE atendeu a altos padrões de acessibilidade, o que indica o potencial da ferramenta para o desenvolvimento web inclusivo.
+\textcite{latinoware40920} apresentam o WAE (\textit{Web Accessibility Engine}), ferramenta que reúne, em um único fluxo, a edição, a transpilação e a verificação de acessibilidade de páginas web estáticas produzidas por programadores cegos ou com baixa visão. A partir de uma revisão da literatura, os autores adotaram o paradigma de codificação acessível \textit{Grid Coding}, que organiza o código em uma grade navegável por tecnologias assistivas, e a linguagem YAML, escolhida pela clareza, pela simplicidade e pela semelhança de sua estrutura com a linguagem natural. O programador edita a página em uma grade, em um editor web construído apenas com componentes nativos do HTML; a grade é convertida em YAML, e uma API a transpila para HTML semântico. A acessibilidade foi avaliada com o Avaliador e Simulador de Acessibilidade em Sítios (ASES), componente a componente e com o limiar de 95\%: oito dos nove componentes apresentados nos resultados atingiram o limiar, e o subtítulo obteve 90,35\%, por gerar um título de segundo nível sem um título de primeiro nível.
 
-O trabalho é relevante para esta pesquisa por abordar ferramentas que promovem a acessibilidade no desenvolvimento de software por meio de paradigmas de codificação estruturados, aproximando-se do objetivo de gerar explicações estruturadas e semanticamente orientadas. Por outro lado, o resumo do artigo não descreve avaliação com usuários nem apresenta valores numéricos para os resultados do ASES, e a ferramenta é voltada à produção de páginas web, e não à explicação de código existente. Como o ASES avalia páginas web, ele também não se aplica diretamente a explicações em texto; por isso, este trabalho define critérios próprios para verificar a conformidade das explicações (Seção~\ref{sec:verificador}), mantendo, porém, a ideia de empregar uma verificação automática como parte da validação.
+A saída do WAE não foi avaliada por usuários cegos ou com baixa visão: o único teste com usuário, com um participante cego, foi realizado em outra plataforma e serviu para orientar o desenvolvimento, e os autores indicam, como trabalho futuro, estudos com grupos maiores de programadores cegos. O trabalho é relevante para esta pesquisa por promover a acessibilidade no desenvolvimento de software por meio de uma estrutura de codificação organizada, aproximando-se do objetivo de gerar explicações estruturadas e semanticamente orientadas; a ferramenta, no entanto, é voltada à produção de páginas web, e não à explicação de código existente. Como o ASES avalia páginas web, ele também não se aplica a explicações em texto; por isso, este trabalho define critérios próprios para verificar a conformidade das explicações (Seção~\ref{sec:verificador}), mantendo, porém, a ideia de empregar uma verificação automática como parte da validação.
 
 \section{Diretrizes de Acessibilidade em Ambientes de Desenvolvimento Integrado para Estudantes Cegos}
 
-\textcite{latinoware37693} propõem diretrizes de acessibilidade para o projeto de ambientes de desenvolvimento integrado (IDEs) voltados a estudantes cegos, motivadas pela constatação de que as IDEs utilizadas em disciplinas de programação baseiam-se em elementos gráficos que os leitores de tela não suportam plenamente, o que pode dificultar a aprendizagem. O trabalho, derivado de uma tese de doutorado, seguiu sete estágios (exploratório, descritivo, correlacional, seleção, especificação, validação e refinamento) e combinou revisão da literatura, questionários, entrevistas e grupo focal. Os autores concluem que as recomendações cumprem o propósito de apoiar o desenvolvimento de IDEs mais acessíveis.
+\textcite{latinoware37693} propõem diretrizes de acessibilidade para o projeto de ambientes de desenvolvimento integrado (IDEs) voltados a estudantes cegos, motivadas pela constatação de que as IDEs utilizadas em disciplinas de programação baseiam-se em elementos gráficos que os leitores de tela não suportam plenamente, o que pode dificultar a aprendizagem. O trabalho, derivado de uma tese de doutorado, percorreu os estágios exploratório, descritivo, correlacional, de seleção, de especificação, de validação e de refinamento. Na etapa exploratória, foram entrevistados estudantes e egressos cegos e aplicados questionários a professores; a validação ocorreu em dois ciclos, o primeiro com estudantes, por questionário e grupo focal, e o segundo com cinco participantes (três programadores cegos, um analista de acessibilidade e um professor), por questionário e entrevista. O resultado são 21 diretrizes, organizadas em oito categorias: compreensão do código, depuração, navegação, edição, \textit{skimming}, interface gráfica, sobrecarga auditiva e leitura do código-fonte.
 
-As diretrizes oferecem um arcabouço para o projeto de ambientes de desenvolvimento acessíveis e podem orientar a forma como o protótipo se integra ao fluxo de trabalho de programadores com deficiência visual. O resumo, no entanto, não apresenta medidas quantitativas de efetividade, e as diretrizes tratam da interface dos ambientes, e não da explicação do código-fonte. A proposta deste trabalho complementa esse enfoque ao tratar do conteúdo que o leitor de tela transmite ao programador.
+A validação foi qualitativa, sem medidas quantitativas de efetividade, e os autores reconhecem como limitações a amostra pequena e a revisão \textit{ad hoc} da literatura na etapa exploratória. As diretrizes tratam da interface dos ambientes, e não da explicação do código-fonte, mas duas de suas categorias tocam diretamente este trabalho: a compreensão do código e a sobrecarga auditiva, que o protótipo procura atender ao entregar explicações curtas e ordenadas pela gravidade dos pontos críticos. Entre os trabalhos futuros, os autores propõem estudar quais alertas sonoros comunicam melhor cada tipo de informação, questão próxima da entrega por fala adotada aqui. A proposta deste trabalho complementa esse enfoque ao tratar do conteúdo que o leitor de tela transmite ao programador.
 
 \section{Sumarização Automática de Código com Modelos de Linguagem}
 
@@ -374,11 +374,11 @@ Os trabalhos apresentados complementam-se. \textcite{latinoware34224}, \textcite
 
 \chapter{Métodos}\label{sec:metodos}
 
-A metodologia deste trabalho organiza-se em etapas que vão da fundamentação teórica à validação de um protótipo funcional de uma ferramenta baseada em Inteligência Artificial para a geração de explicações estruturadas de código-fonte. O foco é a identificação de pontos críticos do código e o alinhamento à regra de negócio, com o objetivo de apoiar a compreensão de código-fonte por programadores com deficiência visual. A abordagem é guiada pelas lacunas identificadas nos trabalhos relacionados (Capítulo~\ref{sec:TrabRel}), e o protótipo foi desenvolvido de forma incremental, em quatro fases: análise estática do código (Fase 1); mapa do projeto e geração de explicações por modelos de linguagem (Fase 2); verificação automática das explicações (Fase 3, ainda não implementada); e fala pelo leitor de tela (Fase 4).
+A metodologia deste trabalho organiza-se em etapas que vão da fundamentação teórica à validação de um protótipo funcional de uma ferramenta baseada em Inteligência Artificial para a geração de explicações estruturadas de código-fonte. O foco é a identificação de pontos críticos do código e o alinhamento à regra de negócio, com o objetivo de apoiar a compreensão de código-fonte por programadores com deficiência visual. A abordagem é guiada pelas lacunas identificadas nos trabalhos relacionados (Capítulo~\ref{sec:TrabRel}), e o protótipo foi desenvolvido de forma incremental, em quatro fases: análise estática do código (Fase 1); mapa do projeto e geração de explicações por modelos de linguagem (Fase 2); verificação automática das explicações (Fase 3, ainda não implementada); e interface de terminal acessível, com execução por um único comando, fala pelo leitor de tela e um menu de pastas opcional (Fase 4).
 
 \section{Revisão e Análise da Literatura}
 
-Esta etapa consistiu na revisão da literatura sobre acessibilidade na computação, desafios enfrentados por programadores com deficiência visual, tecnologias assistivas (especialmente leitores de tela), modelos de linguagem de grande porte, engenharia de \textit{prompts} e aplicações da Inteligência Artificial na Engenharia de Software. O objetivo foi consolidar o entendimento sobre o estado da arte e identificar lacunas de pesquisa que a presente proposta busca preencher. Os trabalhos analisados são apresentados nos Capítulos~\ref{sec:refteorico} e~\ref{sec:TrabRel}. Em particular, o estudo de \textcite{latinoware34224}, que investiga o uso de Inteligência Artificial por programadores cegos, e o de \textcite{latinoware37693}, que propõe diretrizes de acessibilidade para IDEs, fundamentam a compreensão dos desafios e a necessidade de soluções específicas para esse público.
+Esta etapa consistiu na revisão da literatura sobre acessibilidade na computação, desafios enfrentados por programadores com deficiência visual, tecnologias assistivas (especialmente leitores de tela), modelos de linguagem de grande porte, engenharia de \textit{prompts} e aplicações da Inteligência Artificial na Engenharia de Software. O objetivo foi consolidar o entendimento sobre o estado da arte e identificar lacunas de pesquisa que a presente proposta busca preencher. Os trabalhos analisados são apresentados nos Capítulos~\ref{sec:refteorico} e~\ref{sec:TrabRel}. Em particular, o estudo de \textcite{latinoware34224}, que investiga o uso de Inteligência Artificial por programadores cegos, e o de \textcite{latinoware37693}, que propõe diretrizes de acessibilidade para IDEs, fundamentam a compreensão dos desafios e a necessidade de soluções específicas para esse público. A revisão bibliográfica contou com o apoio de Inteligência Artificial Generativa na busca e na formatação das referências, conforme a declaração da Seção~\ref{sec:usoia}.
 
 \section{Definição de Requisitos e Critérios}\label{sec:requisitos}
 
@@ -386,6 +386,7 @@ Com base na revisão da literatura e nos objetivos específicos do trabalho, for
 
 \begin{itemize}
   \item analisar todos os arquivos Python de um projeto, e não apenas um arquivo isolado, e reportar os arquivos com erro de sintaxe;
+  \item permitir que o projeto seja analisado por um único comando, digitado na própria pasta do projeto ou acompanhado do seu caminho, e, opcionalmente, escolhido por um menu de texto que apresenta um nível de pastas por vez;
   \item identificar pontos críticos do código por regras determinísticas e agrupá-los por região de código;
   \item gerar uma visão geral do projeto e uma explicação por região, por meio de modelo de linguagem executado localmente ou em nuvem;
   \item entregar o relatório como texto e por fala no leitor de tela NVDA.
@@ -433,13 +434,15 @@ Quando um arquivo possui erro de sintaxe, o \textit{prompt} instrui o modelo a a
 
 \section{Desenvolvimento do Protótipo}\label{sec:prototipo}
 
-O protótipo é uma aplicação em Python, executada em linha de comando, que recebe o caminho de um projeto e produz um relatório. A Figura~\ref{fig:arquitetura} apresenta o seu fluxo: o projeto Python passa pela análise sintática, que alimenta, em paralelo, as regras de pontos críticos e o mapa estrutural do projeto; ambos alimentam a montagem dos \textit{prompts}; os \textit{prompts} são enviados, por uma interface única, a um modelo executado localmente ou em nuvem pelo Ollama; e as explicações resultantes são impressas como texto e enviadas ao NVDA para serem faladas.
+O protótipo é uma aplicação em Python, executada em linha de comando, que analisa o projeto da pasta em que o terminal se encontra, ou o indicado por um caminho ou por um menu de pastas, e produz um relatório. A Figura~\ref{fig:arquitetura}, gerada com o auxílio de Inteligência Artificial Generativa (Seção~\ref{sec:usoia}), apresenta o seu fluxo: o projeto Python passa pela análise sintática, que alimenta, em paralelo, as regras de pontos críticos e o mapa estrutural do projeto; ambos alimentam a montagem dos \textit{prompts}; os \textit{prompts} são enviados, por uma interface única, a um modelo executado localmente ou em nuvem pelo Ollama; e as explicações resultantes são impressas como texto e enviadas ao NVDA para serem faladas.
 
 \begin{figure}[htbp]
   \centering
   \input{figura_arquitetura.tikz}
   \caption{Arquitetura do protótipo, da análise estática do projeto Python à entrega das explicações em texto e por fala}
-  \legend{Fonte: Elaborado pelo autor, com base em \textcite{treesitter}, \textcite{sahoo2024prompt}, \textcite{ollama2026nuvem} e \textcite{nvaccess2024controller}.}
+  \legend{Fonte: Adaptado de \textcite{treesitter}, \textcite{sahoo2024prompt}, \textcite{ollama2026nuvem} e \textcite{nvaccess2024controller}.}
+  % PENDENTE: acrescentar a versão do modelo usada na criação da figura (sessão de 18/10/2026),
+  % como pedem as Diretrizes de IA da UFV, item 2.1.7.1.
   \label{fig:arquitetura}
 \end{figure}
 
@@ -451,9 +454,13 @@ A geração das explicações é feita por uma interface única, denominada \tex
 
 A política de falhas foi pensada para quem utiliza a saída sem ver a tela. Falhas que se repetiriam em toda requisição, como servidor fora do ar ou modelo ausente, interrompem a geração imediatamente; falhas isoladas, como resposta vazia ou tempo esgotado, afetam apenas a região correspondente, que é declarada sem explicação em vez de omitida.
 
-A fala é realizada por uma classe que carrega a biblioteca \textit{NVDA Controller Client} com o módulo \textit{ctypes} do Python, verifica se o NVDA está em execução, envia o relatório em uma única chamada de fala e permite cancelar a fala em curso \cite{nvaccess2024controller}. A verificação ocorre antes da análise e da geração, para que um problema com o NVDA ou com a biblioteca seja informado em segundos. Quando a fala não é possível, o erro é dito em palavras, o relatório é entregue apenas como texto e o programa termina com um código de saída específico. Uma interface de fala separada permite acrescentar outros sistemas de fala no futuro.
+A fala é realizada por uma classe que carrega a biblioteca \textit{NVDA Controller Client} com o módulo \textit{ctypes} do Python, verifica se o NVDA está em execução, envia o relatório em uma única chamada de fala e permite cancelar a fala em curso \cite{nvaccess2024controller}. A verificação ocorre antes da análise e da geração, para que um problema com o NVDA ou com a biblioteca seja informado em segundos. Se o NVDA estiver instalado, mas fechado, o protótipo o abre e aguarda até 20 segundos que ele responda, avisando o usuário em palavras; quando o Windows indica que outro leitor de tela está ativo, o NVDA não é aberto, para que dois leitores não falem ao mesmo tempo. Quando a fala não é possível, o erro é dito em palavras, o relatório é entregue apenas como texto e o programa termina com um código de saída específico. Uma interface de fala separada permite acrescentar outros sistemas de fala no futuro.
 
-O protótipo conta com 122 testes automatizados, que não dependem de modelo de linguagem, rede, NVDA nem Windows: o cliente do Ollama é testado contra um servidor HTTP falso, que reproduz o formato documentado da API, e a fala é testada contra uma biblioteca falsa.
+Para reduzir o esforço de navegar entre as pastas de um projeto, dificuldade relatada por programadores com deficiência visual \cite{latinoware20457}, a execução do protótipo foi reduzida a um único comando. No Windows, um atalho de linha de comando ativa o ambiente do protótipo, e um \textit{script}, executado uma vez, inclui a pasta do protótipo na variável de ambiente \texttt{PATH} do usuário, sem exigir permissão de administrador, para que o comando \texttt{analisar} possa ser chamado de qualquer pasta. Assim, o usuário entra na pasta do projeto pelo terminal, com o comando \texttt{cd}, e digita apenas \texttt{analisar}: sem caminho, a pasta atual é analisada. Na pasta pessoal do usuário, em que o terminal costuma abrir, e na raiz do disco, o comando não inicia a análise e informa como prosseguir, pois a varredura percorreria arquivos alheios ao projeto e produziria um relatório longo e sem relação com ele. Caminhos inexistentes e pastas sem código Python também são informados em palavras, para que um relatório vazio não seja confundido com a ausência de pontos críticos. O atalho impede, ainda, que arquivos do projeto analisado sejam executados no lugar de bibliotecas do Python, o que poderia ocorrer quando o comando é chamado de dentro do projeto.
+
+Como alternativa, uma opção da linha de comando abre um menu de pastas, que conduz a escolha por uma pergunta de cada vez e apresenta um único nível de pastas por tela: cada tela informa em que pasta o usuário está e quantas subpastas com código Python ela contém, e lista até sete delas por vez, numeradas. Pastas sem código Python, ocultas ou de ferramentas, como ambientes virtuais e metadados do Git, são omitidas, e a quantidade omitida é informada, para que o usuário não suponha que elas não existem. Também é possível filtrar a lista por parte do nome, colar o caminho completo de uma pasta e retomar o último projeto analisado. Antes da análise, o menu informa quantos arquivos serão analisados e, quando a pasta tem arquivos próprios e subpastas com código, pergunta se as subpastas devem ser incluídas. O menu utiliza apenas linhas de texto simples, sem redesenho da tela, cores ou teclas especiais, de modo que o leitor de tela fale o que o terminal imprime. Na primeira versão, o menu era aberto sempre que nenhum caminho era informado; no uso pelo autor, essa etapa obrigatória mostrou-se pouco prática, e o menu passou a ser opcional.
+
+O protótipo conta com 198 testes automatizados, que não dependem de modelo de linguagem, rede, NVDA nem Windows: o cliente do Ollama é testado contra um servidor HTTP falso, que reproduz o formato documentado da API; a fala e a abertura automática do NVDA, contra uma biblioteca e um processo falsos; e a escolha da pasta analisada, inclusive pelo menu, com entradas e pastas simuladas.
 
 \section{Seleção dos Modelos de Linguagem}\label{sec:modelos}
 
@@ -493,7 +500,7 @@ A validação do protótipo combina estratégias técnicas e automatizadas, desc
 
 \subsection{Testes Automatizados}
 
-Os 122 testes automatizados cobrem a análise estática, o mapa do projeto, a montagem dos \textit{prompts}, a orquestração e a política de falhas, o cliente do Ollama, a integração com o NVDA e a linha de comando. Eles verificam o comportamento esperado do protótipo, mas não substituem a verificação com o modelo de linguagem real nem com o NVDA real, tratadas nas subseções seguintes.
+Os 198 testes automatizados cobrem a análise estática, o mapa do projeto, a montagem dos \textit{prompts}, a orquestração e a política de falhas, o cliente do Ollama, a integração com o NVDA, a linha de comando e o menu de pastas. Eles verificam o comportamento esperado do protótipo, mas não substituem a verificação com o modelo de linguagem real nem com o NVDA real, tratadas nas subseções seguintes.
 
 \subsection{Integração com o NVDA por meio do \textit{NVDA Controller Client}}
 
@@ -533,19 +540,23 @@ Propõe-se uma avaliação exploratória com programadores com deficiência visu
 Estudos da área têm utilizado amostras pequenas, com quatro participantes em \textcite{latinoware34224} e dez em \textcite{latinoware20457}, e estes últimos reconhecem que, nesse caso, os resultados não podem ser generalizados; o mesmo vale para a avaliação aqui proposta, que tem caráter exploratório. A participação de pessoas exige consentimento livre e esclarecido e a observância dos procedimentos de ética em pesquisa aplicáveis à instituição. Se o recrutamento, a aprovação ética ou o prazo inviabilizarem a aplicação do protocolo, a avaliação com usuários será tratada como limitação e como trabalho futuro (Capítulo~\ref{sec:limitacoes}).
 
 
+\section{Uso de Inteligência Artificial Generativa nesta pesquisa}\label{sec:usoia}
+
+Em conformidade com as diretrizes institucionais da Universidade Federal de Viçosa para o uso responsável da Inteligência Artificial, declara-se que a ferramenta de Inteligência Artificial Generativa Claude, da Anthropic, foi utilizada como apoio ao autor na elaboração deste trabalho. A ferramenta foi empregada na geração da Figura 2, na revisão gramatical e ortográfica do texto e no auxílio à busca e à formatação de algumas referências bibliográficas. Todo o conteúdo foi revisado e validado pelo autor, que assume integral responsabilidade pela autoria, pela acurácia das informações e pelas conclusões apresentadas.
+
 \chapter{Resultados Parciais e Resultados Esperados}\label{sec:resultEsperados}
 
-Este capítulo apresenta o estado do protótipo em 18 de outubro de 2026, os resultados de uma execução exploratória e os resultados esperados das etapas pendentes.
+Este capítulo apresenta o estado do protótipo em 3 de novembro de 2026, os resultados de uma execução exploratória e os resultados esperados das etapas pendentes.
 
 \section{Resultados Parciais}\label{sec:parciais}
 
-As Fases 1, 2 e 4 do protótipo estão implementadas: análise estática de projetos Python inteiros com identificação de pontos críticos, mapa estrutural do projeto, geração de explicações por modelo local ou em nuvem e fala pelo NVDA. A Fase 3, de verificação automática das explicações, ainda não foi implementada (Seção~\ref{sec:verificador}).
+As Fases 1, 2 e 4 do protótipo estão implementadas: análise estática de projetos Python inteiros com identificação de pontos críticos, mapa estrutural do projeto, geração de explicações por modelo local ou em nuvem, fala pelo NVDA e execução por um único comando na pasta do projeto, com menu de pastas opcional. A Fase 3, de verificação automática das explicações, ainda não foi implementada (Seção~\ref{sec:verificador}).
 
-A suíte de 122 testes automatizados foi executada com sucesso em ambiente Linux. Em Windows, a execução de uma versão anterior da suíte registrou a falha de um teste sensível ao tempo de conexão, cujo limite foi ajustado; a reexecução completa nesse sistema ainda não foi registrada.
+A suíte de 198 testes automatizados foi executada com sucesso em ambiente Linux, com Python 3.12. Em Windows, uma execução anterior registrou a falha de um teste sensível ao tempo de conexão, cujo limite foi ajustado, e o registro de 18 de outubro de 2026, com a suíte da época, mostra 114 testes aprovados e 1 ignorado; a suíte atual, de 198 testes, ainda não foi executada nesse sistema.
 
-Quanto à fala, em 18 de outubro de 2026, em um computador com Windows, a biblioteca de 64 bits foi carregada, a função de verificação respondeu com o NVDA em execução e o autor confirmou, por escuta, que o relatório foi falado pelo NVDA. Ainda não foram registrados a versão do NVDA, o comportamento diante de chamadas consecutivas, a ocorrência de fala duplicada e o comportamento com o Windows bloqueado.
+Quanto à fala, em 18 de outubro de 2026, em um computador com Windows, a biblioteca de 64 bits foi carregada, a função de verificação respondeu com o NVDA em execução e o autor confirmou, por escuta, que o relatório foi falado pelo NVDA. Ainda não foram registrados a versão do NVDA, o comportamento diante de chamadas consecutivas, a ocorrência de fala duplicada e o comportamento com o Windows bloqueado. Em 8 de novembro de 2026, o atalho de execução abriu o menu de pastas em um computador com Windows; como o NVDA estava fechado, o erro foi dito em palavras e o menu seguiu apenas em texto, como previsto. Depois dessa execução, a análise da pasta atual passou a ser o comportamento padrão e o menu tornou-se opcional (Seção~\ref{sec:prototipo}); essa forma de execução e o \textit{script} que inclui o comando no \texttt{PATH} ainda não foram executados no Windows.
 
-Para exercitar o caminho em nuvem, o protótipo foi executado sobre o projeto de exemplo do repositório, composto por três arquivos Python que se importam, com o modelo \texttt{gemma4:31b} no servidor ollama.com. A visão geral e as explicações das regiões foram geradas sem erro, e, em uma execução com a visão geral e duas regiões, a geração levou 3,4 segundos no total. Em uma amostra de três textos, o modelo manteve o marcador de inferência, utilizou frases de até vinte palavras e não empregou símbolos decorativos, mas deixou um sublinhado no nome de uma função e atribuiu a uma gravidade uma justificativa que não consta nos dados enviados. Por se tratar de uma amostra de três textos, sem verificação sistemática, esses resultados indicam apenas que o caminho em nuvem funciona e que os dois defeitos observados justificam a verificação automática e a revisão manual (Seção~\ref{sec:verificador}); eles não permitem concluir sobre a qualidade do modelo.
+Para exercitar o caminho em nuvem, o protótipo foi executado sobre o projeto de exemplo do repositório, composto por três arquivos Python que se importam, com o modelo \texttt{gemma4:31b} no servidor ollama.com. A visão geral e as explicações das regiões foram geradas sem erro, e, em uma execução com a visão geral e duas regiões, a geração levou 3,06 segundos no total. Em uma amostra de três textos, o modelo manteve o marcador de inferência, utilizou frases de até vinte palavras e não empregou símbolos decorativos, mas deixou um sublinhado no nome de uma função e atribuiu a uma gravidade uma justificativa que não consta nos dados enviados. Por se tratar de uma amostra de três textos, sem verificação sistemática, esses resultados indicam apenas que o caminho em nuvem funciona e que os dois defeitos observados justificam a verificação automática e a revisão manual (Seção~\ref{sec:verificador}); eles não permitem concluir sobre a qualidade do modelo.
 
 \section{Resultados Esperados}
 
@@ -564,65 +575,74 @@ A análise limita-se a código Python. A resolução de chamadas por nome simple
 
 No modo em nuvem, o código analisado é enviado a um servidor de terceiros. A documentação consultada afirma que os \textit{prompts} e as respostas não são utilizados para treinar modelos, mas não informa o prazo de retenção, e os modelos hospedados podem ser descontinuados \cite{ollama2026nuvem}. Por isso, o argumento de privacidade da execução local não vale para esse modo, que é utilizado apenas com código de exemplo.
 
-A fala restringe-se ao NVDA no Windows. O protótipo ainda não verifica se o Windows está bloqueado ou em tela segura antes de enviar texto, como recomenda a documentação da biblioteca \cite{nvaccess2024controller}, envia o relatório inteiro em uma única chamada, e o comportamento diante de chamadas consecutivas e de fala duplicada ainda não foi registrado.
+A fala restringe-se ao NVDA no Windows. O protótipo ainda não verifica se o Windows está bloqueado ou em tela segura antes de enviar texto, como recomenda a documentação da biblioteca \cite{nvaccess2024controller}, envia o relatório inteiro em uma única chamada, e o comportamento diante de chamadas consecutivas e de fala duplicada ainda não foi registrado. A abertura automática do NVDA foi verificada apenas com uma biblioteca e um processo simulados.
+
+A forma de execução e o menu de pastas ainda não foram utilizados com o NVDA real nem por programadores com deficiência visual: a análise da pasta atual como padrão, a quantidade de itens por tela e a condução por uma pergunta de cada vez são decisões de projeto, e não resultados de avaliação. Ambos dependem de o leitor de tela falar o que o terminal imprime, e \textcite{latinoware6969} relatam que, nos ambientes de desenvolvimento web avaliados, a saída do terminal é inacessível ou apenas parcialmente acessível. Além disso, quando apenas uma subpasta é analisada, as chamadas entre ela e o restante do projeto não aparecem no mapa.
 
 \section{Trabalhos Futuros}
 
-Como continuidade, propõem-se: a avaliação com programadores com deficiência visual, com mais participantes e em cenários reais de desenvolvimento, para medir a utilidade, a usabilidade e a efetividade das explicações; a personalização do nível de detalhe e a navegação por seções da explicação; o suporte a outras linguagens de programação; a integração com outros sistemas de fala e leitores de tela, aproveitando a interface de fala do protótipo; e a integração da ferramenta a ambientes de desenvolvimento amplamente utilizados.
+Como continuidade, pretende-se portar a ferramenta para os sistemas macOS e Linux. A análise estática, o menu de pastas e a geração de explicações não dependem do Windows, e a suíte de testes já é executada em Linux; o porte exige, portanto, implementar a fala com os leitores de tela desses sistemas, por meio da interface de fala já existente no protótipo, oferecer um comando de execução e uma instalação equivalentes aos do Windows e validar o funcionamento em cada sistema.
+
+Propõem-se também: a avaliação com programadores com deficiência visual, com mais participantes e em cenários reais de desenvolvimento, para medir a utilidade, a usabilidade e a efetividade das explicações; a personalização do nível de detalhe; a navegação pelos resultados, região por região, com a explicação gerada sob demanda; o suporte a outras linguagens de programação; e a integração da ferramenta a ambientes de desenvolvimento amplamente utilizados.
 
 
-% \chapter{Conclusão}
+\chapter{Conclusão}\label{sec:conclusao}
 
-% A presente trabalho propos uma ferramenta baseada em Inteligência Artificial para a geração de explicações estruturadas de código-fonte, com foco na identificação de pontos críticos e na contextualização da regra de negócio, visando apoiar programadores com deficiência visual durante atividades de compreensão de software. A motivação para essa proposta decorre das limitações identificadas na literatura em relação às tecnologias assistivas atualmente disponíveis, especialmente os leitores de tela, que apresentam dificuldades para transmitir de forma eficiente a estrutura e o contexto semântico do código-fonte.
+% PENDENTE: atualizar o quarto parágrafo com os resultados do verificador automático e da comparação entre modelos, se forem concluídos antes da entrega.
+Este trabalho desenvolveu e avaliou tecnicamente um protótipo que gera explicações de código-fonte Python para programadores com deficiência visual, combinando a análise estática do código, responsável por identificar os pontos críticos de forma determinística, com modelos de linguagem de grande porte, responsáveis por redigir as explicações, que são entregues como texto e pela fala do leitor de tela NVDA. A proposta partiu de uma lacuna identificada na literatura: nenhum dos trabalhos analisados combina a explicação do código existente, a identificação de pontos críticos, a relação com a regra de negócio e a entrega do resultado por leitor de tela (Capítulo~\ref{sec:TrabRel}).
 
-% A revisão da literatura evidenciou que, embora os avanços recentes em Inteligência Artificial tenham ampliado significativamente as possibilidades de geração e interpretação automática de código, ainda existem poucas iniciativas voltadas especificamente às necessidades de acessibilidade de programadores com deficiência visual. Nesse contexto, este trabalho busca contribuir ao integrar conceitos de Inteligência Artificial, Engenharia de Software e acessibilidade em uma abordagem voltada à geração de explicações mais contextualizadas e compatíveis com tecnologias assistivas.
+O protótipo analisa projetos Python inteiros, reporta os arquivos com erro de sintaxe, agrupa os pontos críticos pela função que os contém e monta um mapa do projeto com o grafo de chamadas, de modo que cada explicação informe quem chama a região e o que ela chama. As explicações seguem regras de acessibilidade impostas no próprio \textit{prompt}, como frases curtas, ausência de recursos visuais e a marcação de toda dedução com a palavra \enquote{Inferência:}, e podem ser geradas por modelos executados localmente, sem que o código seja enviado a terceiros. Para analisar um projeto, basta entrar na sua pasta e digitar um único comando; um menu de pastas opcional permite escolhê-lo sem digitar o caminho.
 
-% Com base no levantamento bibliográfico, foram definidos requisitos para a ferramenta proposta e estabelecida uma estratégia para a geração de explicações utilizando modelos de linguagem de grande porte e técnicas de engenharia de prompts. Além disso, foi concebido um protótipo cuja arquitetura prevê a integração entre o modelo de IA e o leitor de telas NVDA, juntamente com uma estratégia de validação técnica baseada na API NVDA Controller Client para verificar a correta comunicação entre os componentes do sistema.
+A validação técnica mostrou que o fluxo funciona de ponta a ponta: os 198 testes automatizados foram executados com sucesso em Linux, o NVDA falou o relatório em um computador com Windows e o caminho em nuvem gerou a visão geral e as explicações sem erro. A execução exploratória também evidenciou os limites do uso de modelos de linguagem: em uma amostra de três textos, o modelo respeitou o marcador de inferência e o limite de palavras por frase, mas deixou um nome de função com sublinhado e atribuiu a uma gravidade uma justificativa ausente dos dados enviados. Esses defeitos reforçam que a análise estática deve permanecer como fonte dos fatos e que o texto gerado precisa ser verificado.
 
-% Espera-se que a abordagem proposta demonstre o potencial da Inteligência Artificial para apoiar a compreensão de código-fonte por programadores com deficiência visual, fornecendo explicações que destaquem elementos relevantes da implementação e seu relacionamento com a lógica de negócio. Embora a efetividade da solução dependa de avaliações práticas com usuários, o trabalho estabelece uma base metodológica e tecnológica para o desenvolvimento de ferramentas mais acessíveis voltadas à programação.
+Permanecem por concluir a verificação automática das explicações e a comparação entre os modelos candidatos, das quais dependem a escolha do modelo recomendado e a medição sistemática da conformidade com as regras de acessibilidade. Sobretudo, a validação realizada é técnica e não permite afirmar que as explicações ajudam, de fato, na compreensão do código; essa resposta depende da avaliação com programadores com deficiência visual proposta neste trabalho (Seção~\ref{sec:usuarios}).
 
-% Como continuidade desta pesquisa, recomenda-se a realização de estudos com programadores com deficiência visual para avaliar a utilidade, a usabilidade e a efetividade das explicações geradas em cenários reais de desenvolvimento. Também são perspectivas futuras a personalização das explicações de acordo com o perfil e a experiência do usuário, o suporte a diferentes linguagens de programação e a integração da solução a ambientes de desenvolvimento amplamente utilizados, ampliando seu potencial de aplicação e impacto na promoção de uma Engenharia de Software mais inclusiva.
+Como contribuição, o trabalho mostra a viabilidade técnica de separar a identificação dos pontos críticos, feita de forma determinística, da redação das explicações, feita pelo modelo de linguagem sob regras de forma pensadas para a escuta, e oferece uma base para a continuidade descrita no Capítulo~\ref{sec:limitacoes}, que inclui a avaliação com usuários e o porte da ferramenta para macOS e Linux.
 
-
-
-\chapter{Cronograma}\label{sec:cronograma}
-
-A Tabela~\ref{tab:cronograma} apresenta as atividades do trabalho, os meses previstos para cada uma e a sua situação em 18 de outubro de 2026. As atividades de implementação do protótipo foram realizadas em outubro de 2026; as demais estão previstas para os meses seguintes.
-
-\begin{table}[htbp]
-  \centering
-  \caption{Cronograma das atividades (2026) e situação em 18 de outubro de 2026}
-  \label{tab:cronograma}
-  \begin{tabular}{p{7.2cm}ccc@{\hspace{4mm}}p{2.8cm}}
-    \toprule
-    \textbf{Atividade} & \textbf{Out.} & \textbf{Nov.} & \textbf{Dez.} & \textbf{Situação} \\
-    \midrule
-    Revisão da literatura (inclui modelos de linguagem e engenharia de \textit{prompts}) & $\bullet$ & $\bullet$ & & Em andamento \\
-    Definição de requisitos e critérios de pontos críticos & $\bullet$ & & & Concluída \\
-    Implementação da análise estática e do mapa do projeto & $\bullet$ & & & Concluída \\
-    Implementação da geração de explicações (modelo local e em nuvem) & $\bullet$ & & & Concluída \\
-    Implementação da fala pelo NVDA & $\bullet$ & & & Concluída \\
-    Verificador automático das explicações & & $\bullet$ & & Prevista \\
-    Comparação entre modelos & & $\bullet$ & $\bullet$ & Prevista \\
-    Elaboração do protocolo de avaliação com usuários & & $\bullet$ & & Prevista \\
-    Avaliação exploratória com usuários (se viável) & & $\bullet$ & $\bullet$ & Condicionada à viabilidade \\
-    Análise dos resultados e redação da monografia & & $\bullet$ & $\bullet$ & Em andamento \\
-    Defesa perante a banca & & & $\bullet$ & Prevista \\
-    \bottomrule
-  \end{tabular}
-  \fonte{Elaborado pelo autor.}
-\end{table}
-
-A exequibilidade do trabalho apoia-se em quatro fatores. Primeiro, o núcleo do protótipo, que compreende a análise estática, a geração de explicações e a fala pelo NVDA, já está implementado e coberto por testes automatizados, o que reduz o risco técnico das etapas restantes. Segundo, o NVDA é gratuito e de código aberto \cite{nvaccess2026guia}, e os modelos candidatos executados localmente têm pesos abertos e cabem na memória do equipamento de desenvolvimento (Tabela~\ref{tab:modelos}). Terceiro, o acesso a modelo em nuvem é opcional, e o trabalho não depende dele. Quarto, as etapas restantes de verificação automática, comparação entre modelos e redação dependem apenas de recursos já disponíveis.
-
-Os principais riscos e as respectivas medidas de mitigação são:
-
-\begin{itemize}
-  \item recrutamento de participantes e aprovação ética para a avaliação com usuários: a atividade é condicionada à viabilidade e, se inviável, é tratada como limitação e trabalho futuro (Capítulo~\ref{sec:limitacoes});
-  \item qualidade insuficiente dos modelos locais em português: a comparação inclui modelos de diferentes famílias e um modelo de maior porte em nuvem, utilizado apenas com código de exemplo;
-  \item indisponibilidade ou descontinuação de modelo em nuvem: o modelo utilizado é registrado em cada execução, e os resultados principais dependem de modelos locais;
-  \item limite de memória do equipamento: a seleção restringe-se a modelos de porte compatível com 16~GB.
-\end{itemize}
+% ----------------------------------------------------------
+% CRONOGRAMA: retirado do TCC II por orientação da orientadora
+% (09/11/2026), por não ser exigido nesta etapa. Para restaurá-lo,
+% retire o "% " do início das linhas abaixo e volte a citá-lo na
+% organização do documento, no fim da Introdução.
+% ----------------------------------------------------------
+% \chapter{Cronograma}\label{sec:cronograma}
+%
+% A Tabela~\ref{tab:cronograma} apresenta as atividades do trabalho, os meses previstos para cada uma e a sua situação em 18 de outubro de 2026. As atividades de implementação do protótipo foram realizadas em outubro de 2026; as demais estão previstas para os meses seguintes.
+%
+% \begin{table}[htbp]
+%   \centering
+%   \caption{Cronograma das atividades (2026) e situação em 18 de outubro de 2026}
+%   \label{tab:cronograma}
+%   \begin{tabular}{p{7.2cm}ccc@{\hspace{4mm}}p{2.8cm}}
+%     \toprule
+%     \textbf{Atividade} & \textbf{Out.} & \textbf{Nov.} & \textbf{Dez.} & \textbf{Situação} \\
+%     \midrule
+%     Revisão da literatura (inclui modelos de linguagem e engenharia de \textit{prompts}) & $\bullet$ & $\bullet$ & & Em andamento \\
+%     Definição de requisitos e critérios de pontos críticos & $\bullet$ & & & Concluída \\
+%     Implementação da análise estática e do mapa do projeto & $\bullet$ & & & Concluída \\
+%     Implementação da geração de explicações (modelo local e em nuvem) & $\bullet$ & & & Concluída \\
+%     Implementação da fala pelo NVDA & $\bullet$ & & & Concluída \\
+%     Verificador automático das explicações & & $\bullet$ & & Prevista \\
+%     Comparação entre modelos & & $\bullet$ & $\bullet$ & Prevista \\
+%     Elaboração do protocolo de avaliação com usuários & & $\bullet$ & & Prevista \\
+%     Avaliação exploratória com usuários (se viável) & & $\bullet$ & $\bullet$ & Condicionada à viabilidade \\
+%     Análise dos resultados e redação da monografia & & $\bullet$ & $\bullet$ & Em andamento \\
+%     Defesa perante a banca & & & $\bullet$ & Prevista \\
+%     \bottomrule
+%   \end{tabular}
+%   \fonte{Elaborado pelo autor.}
+% \end{table}
+%
+% A exequibilidade do trabalho apoia-se em quatro fatores. Primeiro, o núcleo do protótipo, que compreende a análise estática, a geração de explicações e a fala pelo NVDA, já está implementado e coberto por testes automatizados, o que reduz o risco técnico das etapas restantes. Segundo, o NVDA é gratuito e de código aberto \cite{nvaccess2026guia}, e os modelos candidatos executados localmente têm pesos abertos e cabem na memória do equipamento de desenvolvimento (Tabela~\ref{tab:modelos}). Terceiro, o acesso a modelo em nuvem é opcional, e o trabalho não depende dele. Quarto, as etapas restantes de verificação automática, comparação entre modelos e redação dependem apenas de recursos já disponíveis.
+%
+% Os principais riscos e as respectivas medidas de mitigação são:
+%
+% \begin{itemize}
+%   \item recrutamento de participantes e aprovação ética para a avaliação com usuários: a atividade é condicionada à viabilidade e, se inviável, é tratada como limitação e trabalho futuro (Capítulo~\ref{sec:limitacoes});
+%   \item qualidade insuficiente dos modelos locais em português: a comparação inclui modelos de diferentes famílias e um modelo de maior porte em nuvem, utilizado apenas com código de exemplo;
+%   \item indisponibilidade ou descontinuação de modelo em nuvem: o modelo utilizado é registrado em cada execução, e os resultados principais dependem de modelos locais;
+%   \item limite de memória do equipamento: a seleção restringe-se a modelos de porte compatível com 16~GB.
+% \end{itemize}
 
 
 % ----------------------------------------------------------

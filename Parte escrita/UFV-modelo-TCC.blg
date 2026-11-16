@@ -1,15 +1,15 @@
 [0] Config.pm:307> INFO - This is Biber 2.19
 [0] Config.pm:310> INFO - Logfile is 'UFV-modelo-TCC.blg'
-[63] biber:340> INFO - === Tue Nov  3, 2026, 15:01:46
-[76] Biber.pm:419> INFO - Reading 'UFV-modelo-TCC.bcf'
-[128] Biber.pm:979> INFO - Found 28 citekeys in bib section 0
-[138] Biber.pm:4419> INFO - Processing section 0
-[149] Biber.pm:4610> INFO - Looking for bibtex file 'referencias.bib' for section 0
-[151] bibtex.pm:1713> INFO - LaTeX decoding ...
-[166] bibtex.pm:1519> INFO - Found BibTeX data source 'referencias.bib'
-[388] UCollate.pm:68> INFO - Overriding locale 'pt-BR' defaults 'normalization = NFD' with 'normalization = prenormalized'
-[388] UCollate.pm:68> INFO - Overriding locale 'pt-BR' defaults 'variable = shifted' with 'variable = non-ignorable'
-[388] Biber.pm:4239> INFO - Sorting list 'nty/global//global/global' of type 'entry' with template 'nty' and locale 'pt-BR'
-[388] Biber.pm:4245> INFO - No sort tailoring available for locale 'pt-BR'
-[415] bbl.pm:660> INFO - Writing 'UFV-modelo-TCC.bbl' with encoding 'UTF-8'
-[428] bbl.pm:763> INFO - Output to UFV-modelo-TCC.bbl
+[48] biber:340> INFO - === Mon Nov  9, 2026, 15:24:57
+[62] Biber.pm:419> INFO - Reading 'UFV-modelo-TCC.bcf'
+[118] Biber.pm:979> INFO - Found 29 citekeys in bib section 0
+[127] Biber.pm:4419> INFO - Processing section 0
+[135] Biber.pm:4610> INFO - Looking for bibtex file 'referencias.bib' for section 0
+[137] bibtex.pm:1713> INFO - LaTeX decoding ...
+[154] bibtex.pm:1519> INFO - Found BibTeX data source 'referencias.bib'
+[420] UCollate.pm:68> INFO - Overriding locale 'pt-BR' defaults 'variable = shifted' with 'variable = non-ignorable'
+[421] UCollate.pm:68> INFO - Overriding locale 'pt-BR' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[421] Biber.pm:4239> INFO - Sorting list 'nty/global//global/global' of type 'entry' with template 'nty' and locale 'pt-BR'
+[421] Biber.pm:4245> INFO - No sort tailoring available for locale 'pt-BR'
+[457] bbl.pm:660> INFO - Writing 'UFV-modelo-TCC.bbl' with encoding 'UTF-8'
+[470] bbl.pm:763> INFO - Output to UFV-modelo-TCC.bbl

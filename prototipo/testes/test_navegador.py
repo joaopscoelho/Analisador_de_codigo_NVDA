@@ -362,10 +362,10 @@ def test_falha_ao_guardar_recentes_e_dita_e_a_escolha_segue(arvore, tmp_path, mo
 
 # ---- integracao com a CLI -------------------------------------------------
 
-def test_cli_sem_caminho_abre_o_menu_e_analisa(arvore, monkeypatch, capsys):
+def test_cli_com_menu_abre_o_menu_e_analisa(arvore, monkeypatch, capsys):
     monkeypatch.chdir(arvore)
     monkeypatch.setattr("builtins.input", Roteiro("1", "a", "s"))
-    assert cli.main([]) == 0
+    assert cli.main(["--menu"]) == 0
     saida = capsys.readouterr().out
     assert "Voce esta na pasta raiz" in saida
     assert "Analise de alfa." in saida
@@ -375,7 +375,7 @@ def test_cli_sem_caminho_abre_o_menu_e_analisa(arvore, monkeypatch, capsys):
 def test_cli_diz_o_escopo_quando_so_os_arquivos_soltos(arvore, monkeypatch, capsys):
     monkeypatch.chdir(arvore)
     monkeypatch.setattr("builtins.input", Roteiro("3", "a", "2"))
-    assert cli.main([]) == 0
+    assert cli.main(["--menu"]) == 0
     saida = capsys.readouterr().out
     assert "Escopo: somente os arquivos desta pasta, sem as subpastas." in saida
     assert "1 arquivo analisado" in saida
@@ -384,15 +384,29 @@ def test_cli_diz_o_escopo_quando_so_os_arquivos_soltos(arvore, monkeypatch, caps
 def test_cli_sair_do_menu_nao_analisa_nada(arvore, monkeypatch, capsys):
     monkeypatch.chdir(arvore)
     monkeypatch.setattr("builtins.input", Roteiro("s"))
-    assert cli.main([]) == 0
+    assert cli.main(["--menu"]) == 0
     assert "Analise de" not in capsys.readouterr().out
 
 
-def test_cli_json_sem_caminho_e_recusado(capsys):
+def test_cli_menu_com_json_e_recusado(capsys):
     with pytest.raises(SystemExit) as saida:
-        cli.main(["--json"])
+        cli.main(["--menu", "--json"])
     assert saida.value.code == 2
-    assert "menu de pastas" in capsys.readouterr().err
+    assert "--menu nao se combina com --json" in capsys.readouterr().err
+
+
+def test_cli_menu_com_caminho_comeca_nele(arvore, monkeypatch, capsys):
+    monkeypatch.setattr("builtins.input", Roteiro("a", "s"))
+    assert cli.main(["--menu", str(arvore / "alfa")]) == 0
+    saida = capsys.readouterr().out
+    assert "Voce esta na pasta alfa" in saida
+    assert "Analise de alfa." in saida
+
+
+def test_cli_menu_com_arquivo_diz_que_o_menu_comeca_numa_pasta(arvore, monkeypatch, capsys):
+    monkeypatch.setattr("builtins.input", Roteiro())  # o menu nem deve abrir
+    assert cli.main(["--menu", str(arvore / "solto.py")]) == 1
+    assert "O menu comeca numa pasta" in capsys.readouterr().err
 
 
 def test_relatorio_fala_o_nome_da_pasta_e_nao_o_caminho(projeto_exemplo, monkeypatch, capsys):
@@ -436,12 +450,3 @@ def test_saida_que_nao_pode_ser_gravada_e_dita_e_muda_o_codigo(projeto_exemplo, 
     assert codigo == 4
     assert "Nao foi possivel gravar o relatorio" in captura.err
     assert "Analise de projeto exemplo." in captura.out  # o relatorio sai mesmo assim
-
-
-# ---- atalho analisar.cmd --------------------------------------------------
-
-def test_atalho_cmd_e_ascii_e_tem_quebra_de_linha_do_windows():
-    conteudo = (Path(__file__).parents[1] / "analisar.cmd").read_bytes()
-    assert all(byte < 128 for byte in conteudo), "o cmd do Windows estraga acentos"
-    assert b"\r\n" in conteudo and b"\n" not in conteudo.replace(b"\r\n", b"")
-    assert b"-m analisador %*" in conteudo
