@@ -1,0 +1,34 @@
+# Repositório do TCC II
+# Só três pastas vão para o commit: "Parte escrita/", "diretrizes/" e "prototipo/".
+# Todo o resto da raiz fica fora (Roteiro_para_defesa_TCC.md, claude.mb,
+# .claude/, .vscode/ e qualquer coisa nova que apareça por lá).
+
+# Ignora tudo na raiz...
+/*
+
+# ...menos estas:
+!/.gitignore
+!/Parte escrita/
+!/diretrizes/
+!/prototipo/
+
+# ---- Auxiliares do LaTeX (dentro de "Parte escrita") ----
+# Mantém .tex, .bib e os PDFs; ignora o que o pdflatex e o biber geram.
+*.aux
+*.bbl
+*.bbl-SAVE-ERROR
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.lof
+*.log
+*.lot
+*.out
+*.run.xml
+*.synctex.gz
+*.toc
+
+# ---- Sistema operacional ----
+Thumbs.db
+desktop.ini
