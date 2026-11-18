@@ -1,9 +1,8 @@
 \changetocdepth {4}
 \babel@toc {brazil}{}\relax 
 \contentsline {chapter}{\chapternumberline {1}Introdução}{7}{chapter.1}%
-\contentsline {section}{\numberline {1.1}Objetivos}{8}{section.1.1}%
-\contentsline {subsection}{\numberline {1.1.1}Objetivo Geral}{8}{subsection.1.1.1}%
-\contentsline {subsection}{\numberline {1.1.2}Objetivos Específicos}{8}{subsection.1.1.2}%
+\contentsline {section}{\numberline {1.1}Objetivo Geral}{8}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Objetivos Específicos}{8}{section.1.2}%
 \contentsline {chapter}{\chapternumberline {2}Referencial Teórico}{10}{chapter.2}%
 \contentsline {section}{\numberline {2.1}Acessibilidade na programação}{10}{section.2.1}%
 \contentsline {section}{\numberline {2.2}Tecnologias Assistivas e Leitores de Tela}{11}{section.2.2}%
@@ -11,8 +10,8 @@
 \contentsline {subsection}{\numberline {2.3.1}Modelos de Linguagem de Grande Porte}{13}{subsection.2.3.1}%
 \contentsline {subsection}{\numberline {2.3.2}Modelos Abertos, Execução Local e Janela de Contexto}{14}{subsection.2.3.2}%
 \contentsline {subsection}{\numberline {2.3.3}Engenharia de Prompts}{14}{subsection.2.3.3}%
-\contentsline {subsection}{\numberline {2.3.4}Inteligência Artificial Aplicada à Engenharia de Software}{15}{subsection.2.3.4}%
-\contentsline {section}{\numberline {2.4}Prototipação}{16}{section.2.4}%
+\contentsline {subsection}{\numberline {2.3.4}Inteligência Artificial Aplicada à Engenharia de \textit {Software}}{15}{subsection.2.3.4}%
+\contentsline {section}{\numberline {2.4}Prototipação}{15}{section.2.4}%
 \contentsline {chapter}{\chapternumberline {3}Trabalhos Relacionados}{17}{chapter.3}%
 \contentsline {section}{\numberline {3.1}Inteligência Artificial e Acessibilidade: Uma Experiência de Inclusão para Programadores Cegos em Ambientes de Desenvolvimento}{17}{section.3.1}%
 \contentsline {section}{\numberline {3.2}WAE - Web Accessibility Engine: Uma Ferramenta de Transpilação Acessível e Estruturada para Programadores Cegos ou de Baixa Visão}{18}{section.3.2}%
@@ -40,4 +39,94 @@
 \contentsline {section}{\numberline {6.2}Trabalhos Futuros}{35}{section.6.2}%
 \contentsline {chapter}{\chapternumberline {7}Conclusão}{36}{chapter.7}%
 \vspace {\cftbeforepartskip }
-\contentsline {chapter}{Refer\^encias}{38}{section*.8}%
+\contentsline {chapter}{Refer\^encias}{38}{section*.9}%
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
