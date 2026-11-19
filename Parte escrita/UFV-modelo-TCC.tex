@@ -238,7 +238,7 @@ Além disso, entre os trabalhos analisados, grande parte concentra-se na adapta�
 
 Diante desse cenário, este trabalho propõe e implementa um protótipo, escrito em \textit{Python}, que combina a análise estática do código-fonte, responsável por identificar os pontos críticos do código de forma determinística, com modelos de linguagem de grande porte, responsáveis por redigir explicações estruturadas alinhadas à regra de negócio. As explicações seguem regras de acessibilidade definidas no trabalho, como frases curtas, ausência de tabelas e de símbolos decorativos e marcação explícita do que é dedução, e são entregues ao programador por meio do leitor de tela NVDA.
 
-% O restante deste documento está organizado da seguinte forma. O Capítulo~\ref{sec:refteorico} apresenta o referencial teórico sobre acessibilidade na programação, leitores de tela, modelos de linguagem de grande porte, engenharia de \textit{prompts} e prototipação. O Capítulo~\ref{sec:TrabRel} discute os trabalhos relacionados. O Capítulo~\ref{sec:metodos} descreve os métodos, incluindo a arquitetura do protótipo, a seleção dos modelos de linguagem e a estratégia de validação. O Capítulo~\ref{sec:resultEsperados} apresenta os resultados parciais e os resultados esperados, o Capítulo~\ref{sec:limitacoes} discute as limitações e os trabalhos futuros e o Capítulo~\ref{sec:conclusao} apresenta a conclusão.
+O restante deste documento está organizado da seguinte forma. O Capítulo~\ref{sec:refteorico} apresenta o referencial teórico sobre acessibilidade na programação, leitores de tela, modelos de linguagem de grande porte, engenharia de \textit{prompts} e prototipação. O Capítulo~\ref{sec:TrabRel} discute os trabalhos relacionados. O Capítulo~\ref{sec:metodos} descreve os métodos, incluindo a arquitetura do protótipo, os modelos de linguagem utilizados e a estratégia de validação. O Capítulo~\ref{sec:resultados} apresenta os resultados obtidos e as limitações do trabalho, e o Capítulo~\ref{sec:conclusao} apresenta a conclusão e os trabalhos futuros.
 
 \section{Objetivo Geral}\label{sec:objetivos}
 
@@ -380,7 +380,7 @@ Os trabalhos apresentados complementam-se. \textcite{latinoware34224}, \textcite
 
 \chapter{Métodos}\label{sec:metodos}
 
-A metodologia deste trabalho organiza-se em etapas que vão da fundamentação teórica à validação de um protótipo funcional de uma ferramenta baseada em Inteligência Artificial para a geração de explicações estruturadas de código-fonte. O foco é a identificação de pontos críticos do código e o alinhamento à regra de negócio, com o objetivo de apoiar a compreensão de código-fonte por programadores com deficiência visual. A abordagem é guiada pelas lacunas identificadas nos trabalhos relacionados (Capítulo~\ref{sec:TrabRel}), e o protótipo foi desenvolvido de forma incremental, em quatro fases: análise estática do código (Fase 1); mapa do projeto e geração de explicações por modelos de linguagem (Fase 2); verificação automática das explicações (Fase 3, ainda não implementada); e interface de terminal acessível, com execução por um único comando, fala pelo leitor de tela e um menu de pastas opcional (Fase 4).
+A metodologia deste trabalho organiza-se em etapas que vão da fundamentação teórica à validação de um protótipo funcional de uma ferramenta baseada em Inteligência Artificial para a geração de explicações estruturadas de código-fonte. O foco é a identificação de pontos críticos do código e o alinhamento à regra de negócio, com o objetivo de apoiar a compreensão de código-fonte por programadores com deficiência visual. A abordagem é guiada pelas lacunas identificadas nos trabalhos relacionados (Capítulo~\ref{sec:TrabRel}), e o protótipo foi desenvolvido de forma incremental, em quatro fases: análise estática do código (Fase 1); mapa do projeto e geração de explicações por modelos de linguagem (Fase 2); verificação automática das explicações (Fase 3, ainda não implementada); e interface de terminal acessível, com execução por um único comando e fala pelo leitor de tela (Fase 4).
 
 \section{Revisão e Análise da Literatura}
 
@@ -440,7 +440,7 @@ Quando um arquivo possui erro de sintaxe, o \textit{prompt} instrui o modelo a a
 
 \section{Desenvolvimento do Protótipo}\label{sec:prototipo}
 
-O protótipo é uma aplicação em \textit{Python}, executada em linha de comando, que analisa o projeto da pasta em que o terminal se encontra, ou o indicado por um caminho ou por um menu de pastas, e produz um relatório. A Figura~\ref{fig:arquitetura}, gerada com o auxílio de Inteligência Artificial Generativa (Seção~\ref{sec:usoia}), apresenta o seu fluxo: o projeto \textit{Python} passa pela análise sintática, que alimenta, em paralelo, as regras de pontos críticos e o mapa estrutural do projeto; ambos alimentam a montagem dos \textit{prompts}; os \textit{prompts} são enviados, por uma interface única, a um modelo executado localmente ou em nuvem pelo Ollama; e as explicações resultantes são impressas como texto e enviadas ao NVDA para serem faladas.
+O protótipo é uma aplicação em \textit{Python}, executada em linha de comando, que analisa o projeto da pasta em que o terminal se encontra, ou o indicado por um caminho, e produz um relatório. A Figura~\ref{fig:arquitetura}, gerada com o auxílio de Inteligência Artificial Generativa (Seção~\ref{sec:usoia}), apresenta o seu fluxo: o projeto \textit{Python} passa pela análise sintática, que alimenta, em paralelo, as regras de pontos críticos e o mapa estrutural do projeto; ambos alimentam a montagem dos \textit{prompts}; os \textit{prompts} são enviados, por uma interface única, a um modelo executado localmente ou em nuvem pelo Ollama; e as explicações resultantes são impressas como texto e enviadas ao NVDA para serem faladas.
 
 \begin{figure}[htbp]
   \centering
@@ -456,34 +456,39 @@ Para a análise estrutural, utilizou-se a biblioteca \textit{Tree-sitter}, um ge
 
 A partir da AST, o protótipo extrai também as definições (funções, métodos e classes), as importações e as chamadas de cada arquivo e monta um mapa do projeto, com o grafo local de chamadas entre arquivos. O mapa permite responder, para cada ponto crítico, em que função ele está, quem chama essa função e o que ela chama. A resolução das chamadas é feita pelo nome simples, com prioridade para o próprio arquivo e depois para os arquivos importados, sem inferência de tipos; os casos ambíguos são registrados, e não ocultados.
 
-A geração das explicações é feita por uma interface única, denominada \texttt{Explicador\-LLM}, de modo que o restante da ferramenta (\textit{prompts}, orquestração e linha de comando) não depende do modelo utilizado: trocar de modelo equivale a alterar um parâmetro, o que viabiliza a comparação entre modelos (Seção~\ref{sec:comparacao}). A implementação atual utiliza a API nativa do Ollama, na qual o tamanho do contexto (padrão de 8192 \textit{tokens}), a semente e a temperatura são definidos por requisição. Um \textit{prompt} que não cabe no contexto configurado é recusado, e não truncado em silêncio. O mesmo cliente acessa modelos locais e modelos hospedados em ollama.com; neste caso, a chave de API é lida de uma variável de ambiente e enviada apenas a esse servidor.
+A geração das explicações é feita por uma interface única, denominada \texttt{Explicador\-LLM}, de modo que o restante da ferramenta (\textit{prompts}, orquestração e linha de comando) não depende do modelo utilizado: trocar de modelo equivale a alterar um parâmetro, o que permite trocar de modelo sem alterar o restante da ferramenta. A implementação atual utiliza a API nativa do Ollama, na qual o tamanho do contexto (padrão de 8192 \textit{tokens}), a semente e a temperatura são definidos por requisição. Um \textit{prompt} que não cabe no contexto configurado é recusado, e não truncado em silêncio. O mesmo cliente acessa modelos locais e modelos hospedados em ollama.com; neste caso, a chave de API é lida de uma variável de ambiente e enviada apenas a esse servidor.
 
 A política de falhas foi pensada para quem utiliza a saída sem ver a tela. Falhas que se repetiriam em toda requisição, como servidor fora do ar ou modelo ausente, interrompem a geração imediatamente; falhas isoladas, como resposta vazia ou tempo esgotado, afetam apenas a região correspondente, que é declarada sem explicação em vez de omitida.
 
 A fala é realizada por uma classe que carrega a biblioteca \textit{NVDA Controller Client} com o módulo \textit{ctypes} do \textit{Python}, verifica se o NVDA está em execução, envia o relatório em uma única chamada de fala e permite cancelar a fala em curso \cite{nvaccess2024controller}. A verificação ocorre antes da análise e da geração, para que um problema com o NVDA ou com a biblioteca seja informado em segundos. Se o NVDA estiver instalado, mas fechado, o protótipo o abre e aguarda até 20 segundos que ele responda, avisando o usuário em palavras; quando o \textit{Windows} indica que outro leitor de tela está ativo, o NVDA não é aberto, para que dois leitores não falem ao mesmo tempo. Quando a fala não é possível, o erro é dito em palavras, o relatório é entregue apenas como texto e o programa termina com um código de saída específico. Uma interface de fala separada permite acrescentar outros sistemas de fala no futuro.
 
-Para reduzir o esforço de navegar entre as pastas de um projeto, dificuldade relatada por programadores com deficiência visual \cite{latinoware20457}, a execução do protótipo foi reduzida a um único comando. No \textit{Windows}, um atalho de linha de comando ativa o ambiente do protótipo, e um \textit{script}, executado uma vez, inclui a pasta do protótipo na variável de ambiente \texttt{PATH} do usuário, sem exigir permissão de administrador, para que o comando \texttt{analisar} possa ser chamado de qualquer pasta. Assim, o usuário entra na pasta do projeto pelo terminal, com o comando \texttt{cd}, e digita apenas \texttt{analisar}: sem caminho, a pasta atual é analisada. Na pasta pessoal do usuário, em que o terminal costuma abrir, e na raiz do disco, o comando não inicia a análise e informa como prosseguir, pois a varredura percorreria arquivos alheios ao projeto e produziria um relatório longo e sem relação com ele. Caminhos inexistentes e pastas sem código \textit{Python} também são informados em palavras, para que um relatório vazio não seja confundido com a ausência de pontos críticos. O atalho impede, ainda, que arquivos do projeto analisado sejam executados no lugar de bibliotecas do \textit{Python}, o que poderia ocorrer quando o comando é chamado de dentro do projeto.
+Para reduzir o esforço de navegar entre as pastas de um projeto, dificuldade relatada por programadores com deficiência visual \cite{latinoware20457}, a execução do protótipo foi reduzida a um único comando. No \textit{Windows}, um atalho de linha de comando ativa o ambiente do protótipo, e um \textit{script}, executado uma vez, inclui a pasta do protótipo na variável de ambiente \texttt{PATH} do usuário, sem exigir permissão de administrador, para que o comando \texttt{analisar} possa ser chamado de qualquer pasta. Assim, o usuário entra na pasta do projeto pelo terminal, com o comando \texttt{cd}, e digita apenas \texttt{analisar}: sem caminho, a pasta atual é analisada. Na pasta pessoal do usuário, em que o terminal costuma abrir, e na raiz do disco, o comando não inicia a análise e informa como prosseguir, pois a varredura percorreria arquivos alheios ao projeto e produziria um relatório longo e sem relação com ele. Caminhos inexistentes e pastas sem código \textit{Python} também são informados em palavras, para que um relatório vazio não seja confundido com a ausência de pontos críticos. O atalho impede, ainda, que arquivos do projeto analisado sejam executados no lugar de bibliotecas do \textit{Python}, o que poderia ocorrer quando o comando é chamado de dentro do projeto. A Figura~\ref{fig:execucao} mostra essa forma de execução. Para quem prefere não digitar o caminho, a opção \texttt{-{}-menu} escolhe a pasta por um menu de texto que apresenta um nível de pastas por vez.
 
-O protótipo conta com 198 testes automatizados, que não dependem de modelo de linguagem, rede, NVDA nem \textit{Windows}: o cliente do Ollama é testado contra um servidor HTTP falso, que reproduz o formato documentado da API; a fala e a abertura automática do NVDA, contra uma biblioteca e um processo falsos; e a escolha da pasta analisada, inclusive pelo menu, com entradas e pastas simuladas.
+O protótipo conta com 198 testes automatizados, que não dependem de modelo de linguagem, de rede nem do NVDA: o cliente do Ollama é testado contra um servidor HTTP falso, que reproduz o formato documentado da API; a fala e a abertura automática do NVDA, contra uma biblioteca e um processo falsos; e a escolha da pasta analisada, inclusive pelo menu, com entradas e pastas simuladas.
+
+O código-fonte do protótipo está publicamente disponível no repositório \url{https://github.com/joaopscoelho/Analisador_de_codigo_NVDA}, que reúne também as instruções de instalação e execução, o projeto \textit{Python} de exemplo utilizado nas verificações descritas neste capítulo e a suíte de testes automatizados.
 
 \section{Seleção dos Modelos de Linguagem}\label{sec:modelos}
 
-A proposta inicial deste trabalho previa o uso do GPT-4o, por meio de API, e do Llama~3, executado via Ollama, como alternativa local. Ao detalhar o protótipo, a escolha foi revista com base em critérios explícitos, apresentados a seguir, e nenhum dos dois modelos integra a implementação atual; como o cliente aceita qualquer modelo disponível no Ollama, o Llama~3 pode ser incluído na comparação, caso se mostre pertinente. Os critérios adotados foram:
+A escolha dos modelos de linguagem utilizados pelo protótipo seguiu critérios explícitos, derivados dos requisitos não funcionais da Seção~\ref{sec:requisitos} e das características dos modelos de pesos abertos discutidas na Seção~\ref{sec:modelosabertos}. Os critérios adotados foram:
 
 \begin{itemize}
   \item \textbf{privacidade e execução local:} modelos de pesos abertos permitem processar o código no próprio equipamento, sem enviá-lo a terceiros, ao passo que serviços em nuvem o transmitem \cite{ollama2026nuvem};
   \item \textbf{adequação ao equipamento:} o equipamento de desenvolvimento dispõe de 16~GB de memória, o que limita o porte dos modelos locais;
-  \item \textbf{capacidade em português e em código:} avaliada pela literatura, que informa o suporte multilíngue \cite{yang2025qwen3} e o desempenho em código e em tarefas multilíngues \cite{bi2025gptoss}, e, principalmente, pela comparação experimental (Seção~\ref{sec:comparacao});
+  \item \textbf{capacidade em português e em código:} avaliada pela literatura, que informa o suporte multilíngue \cite{yang2025qwen3} e o desempenho em código e em tarefas multilíngues \cite{bi2025gptoss};
   \item \textbf{janela de contexto:} suficiente para comportar a instrução, os dados do projeto e o código da região \cite{ollama2026qwen3,ollama2026gemma4};
   \item \textbf{custo e disponibilidade:} modelos de pesos abertos executados localmente não geram custo por requisição, ao passo que o acesso em nuvem depende de chave de API e está sujeito à descontinuação de modelos \cite{ollama2026nuvem};
   \item \textbf{reprodutibilidade:} possibilidade de fixar temperatura e semente e de registrar a versão do modelo utilizado.
 \end{itemize}
 
-A Tabela~\ref{tab:modelos} apresenta os modelos candidatos. A seleção é de candidatos: a escolha do modelo recomendado depende da comparação descrita na Seção~\ref{sec:comparacao}, e não é pré-determinada. O modo em nuvem foi incluído para exercitar o caminho de acesso remoto e para permitir a comparação com um modelo de maior porte; como nele o código analisado sai do computador, é utilizado apenas com código de exemplo.
+A Tabela~\ref{tab:modelos} apresenta os modelos suportados pelo protótipo. Como a geração é feita por uma interface única (Seção~\ref{sec:prototipo}), o cliente aceita qualquer modelo disponível no Ollama, e trocar de modelo equivale a alterar um parâmetro. O \texttt{qwen3:8b} é o modelo local padrão, por ser o que cabe com folga na memória do equipamento de desenvolvimento. O modo em nuvem foi incluído para exercitar o caminho de acesso remoto com um modelo de maior porte; como nele o código analisado sai do computador, é utilizado apenas com código de exemplo.
+% PENDENTE: a comparacao experimental entre os modelos (objetivo especifico 5) depende de decisao com a orientadora.
+% Se for realizada, restaurar a subsecao \subsection{Comparacao entre Modelos}\label{sec:comparacao}, hoje comentada
+% mais abaixo neste arquivo, e voltar a referencia-la aqui e no criterio de capacidade em portugues.
 
 \begin{table}[htbp]
   \centering
-  \caption{Modelos de linguagem candidatos no protótipo}
+  \caption{Modelos de linguagem suportados pelo protótipo}
   \label{tab:modelos}
   \begin{tabular}{p{2.5cm}p{2.2cm}p{7.6cm}}
     \toprule
@@ -500,7 +505,7 @@ A Tabela~\ref{tab:modelos} apresenta os modelos candidatos. A seleção é de ca
 
 \section{Validação Técnica e Conformidade com as Regras de Acessibilidade}\label{sec:validacao}
 
-A validação do protótipo combinou  estratégias técnicas e automatizadas, descritas a seguir, e é complementada por um protocolo de avaliação com usuários (Seção~\ref{sec:usuarios}). Como uma validação exclusivamente técnica não permite afirmar que as explicações ajudam, de fato, na compreensão do código, ela é tratada neste trabalho como etapa necessária, mas não suficiente.
+A validação do protótipo combinou estratégias técnicas e automatizadas, descritas a seguir. Como uma validação exclusivamente técnica não permite afirmar que as explicações ajudam, de fato, na compreensão do código, ela é tratada neste trabalho como etapa necessária, mas não suficiente; o protocolo de avaliação com usuários que a complementaria é apresentado na Seção~\ref{sec:usuarios}.
 
 \subsection{Testes Automatizados}
 
@@ -527,7 +532,7 @@ Prevê-se a implementação de um verificador que confira, sobre o texto produzi
   \item a presença do marcador \enquote{Inferência:} quando a explicação contiver dedução da regra de negócio;
   \item a extensão das frases, com limite de vinte palavras;
   \item a ausência de tabelas, listas, títulos, formatação e símbolos decorativos;
-  \item a ausência de nomes de função com sublinhado, como o observado na execução exploratória (Seção~\ref{sec:parciais});
+  \item a ausência de nomes de função com sublinhado, como o observado na execução exploratória (Seção~\ref{sec:resultgeracao});
   \item a cobertura dos pontos críticos, isto é, a menção, na explicação de cada região, de todos os pontos críticos enviados ao modelo.
 \end{itemize}
 
@@ -548,28 +553,61 @@ Esses critérios verificam a forma e a cobertura, mas não a veracidade do conte
 
 Em conformidade com as diretrizes institucionais da Universidade Federal de Viçosa para o uso responsável da Inteligência Artificial, declara-se que a ferramenta de Inteligência Artificial Generativa Claude, da Anthropic, foi utilizada como apoio ao autor na elaboração deste trabalho. A ferramenta foi empregada na geração da Figura 2, na revisão gramatical e ortográfica do texto e no auxílio à busca e à formatação de algumas referências bibliográficas. Todo o conteúdo foi revisado e validado pelo autor, que assume integral responsabilidade pela autoria, pela acurácia das informações e pelas conclusões apresentadas.
 
-\chapter{Resultados Parciais e Resultados Esperados}\label{sec:resultEsperados}
+\chapter{Resultados}\label{sec:resultados}
 
-Este capítulo apresenta o estado do protótipo em 3 de novembro de 2026, os resultados de uma execução exploratória e os resultados esperados das etapas pendentes.
+Este capítulo apresenta o protótipo implementado, os resultados da sua execução sobre um projeto de exemplo, os resultados da validação técnica e as limitações do trabalho.
 
-\section{Resultados Parciais}\label{sec:parciais}
+\section{O Protótipo Implementado}\label{sec:implementado}
 
-As Fases 1, 2 e 4 do protótipo estão implementadas: análise estática de projetos Python inteiros com identificação de pontos críticos, mapa estrutural do projeto, geração de explicações por modelo local ou em nuvem, fala pelo NVDA e execução por um único comando na pasta do projeto, com menu de pastas opcional. A Fase 3, de verificação automática das explicações, ainda não foi implementada (Seção~\ref{sec:verificador}).
+Das quatro fases previstas na Seção~\ref{sec:prototipo}, três estão implementadas. A Fase 1 analisa estaticamente projetos \textit{Python} inteiros e identifica os pontos críticos; a Fase 2 monta o mapa estrutural do projeto e gera as explicações por modelo executado localmente ou em nuvem; e a Fase 4 entrega o resultado como texto e pela fala do NVDA, com execução por um único comando na pasta do projeto. A Fase 3, de verificação automática das explicações, não foi implementada (Seção~\ref{sec:verificador}).
 
-A suíte de 198 testes automatizados foi executada com sucesso em ambiente Linux, com Python 3.12. Em Windows, uma execução anterior registrou a falha de um teste sensível ao tempo de conexão, cujo limite foi ajustado, e o registro de 18 de outubro de 2026, com a suíte da época, mostra 114 testes aprovados e 1 ignorado; a suíte atual, de 198 testes, ainda não foi executada nesse sistema.
+\section{Análise Estática do Projeto de Exemplo}\label{sec:resultanalise}
 
-Quanto à fala, em 18 de outubro de 2026, em um computador com Windows, a biblioteca de 64 bits foi carregada, a função de verificação respondeu com o NVDA em execução e o autor confirmou, por escuta, que o relatório foi falado pelo NVDA. Ainda não foram registrados a versão do NVDA, o comportamento diante de chamadas consecutivas, a ocorrência de fala duplicada e o comportamento com o Windows bloqueado. Em 8 de novembro de 2026, o atalho de execução abriu o menu de pastas em um computador com Windows; como o NVDA estava fechado, o erro foi dito em palavras e o menu seguiu apenas em texto, como previsto. Depois dessa execução, a análise da pasta atual passou a ser o comportamento padrão e o menu tornou-se opcional (Seção~\ref{sec:prototipo}); essa forma de execução e o \textit{script} que inclui o comando no \texttt{PATH} ainda não foram executados no Windows.
+O projeto de exemplo distribuído com o protótipo é composto por três arquivos \textit{Python} que se importam: \texttt{persistencia.py}, \texttt{regras\_negocio.py} e \texttt{relatorios.py}. Sobre ele, o protótipo identificou oito definições, nenhum arquivo com erro de sintaxe e nenhuma chamada ambígua, além de duas funções que não são chamadas por nenhuma outra do projeto, tratadas como pontos de entrada, e uma dependência externa.
 
-Para exercitar o caminho em nuvem, o protótipo foi executado sobre o projeto de exemplo do repositório, composto por três arquivos Python que se importam, com o modelo \texttt{gemma4:31b} no servidor ollama.com. A visão geral e as explicações das regiões foram geradas sem erro, e, em uma execução com a visão geral e duas regiões, a geração levou 3,06 segundos no total. Em uma amostra de três textos, o modelo manteve o marcador de inferência, utilizou frases de até vinte palavras e não empregou símbolos decorativos, mas deixou um sublinhado no nome de uma função e atribuiu a uma gravidade uma justificativa que não consta nos dados enviados. Por se tratar de uma amostra de três textos, sem verificação sistemática, esses resultados indicam apenas que o caminho em nuvem funciona e que os dois defeitos observados justificam a verificação automática e a revisão manual (Seção~\ref{sec:verificador}); eles não permitem concluir sobre a qualidade do modelo.
+Foram identificados seis pontos críticos, de cinco tipos distintos, distribuídos em quatro regiões de código: dois blocos de tratamento de exceção, uma chamada a dependência externa, um condicional aninhado, um laço aninhado e um literal em condicional. A Figura~\ref{fig:execucao} mostra a execução do protótipo sobre esse projeto e o relatório que ele produz.
 
-\section{Resultados Esperados}
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{execucao_nvda.png}
+  \caption{Execução do protótipo sobre o projeto de exemplo, com o comando \texttt{analisar -{}-falar}, e o relatório produzido pela análise estática}
+  \legend{Fonte: Elaborado pelo autor. A execução ocorreu em \textit{Windows}, com o NVDA aberto; além de impresso no terminal, o relatório foi falado pelo leitor de tela.}
+  \label{fig:execucao}
+\end{figure}
 
-Espera-se que este trabalho resulte em um protótipo funcional capaz de analisar projetos Python e gerar explicações estruturadas em linguagem natural, destacando pontos críticos da implementação e relacionando-os, sempre que possível, à regra de negócio correspondente, de forma organizada e compatível com tecnologias assistivas como leitores de tela. Espera-se ainda obter um verificador automático das regras de acessibilidade das explicações; uma comparação entre os modelos candidatos, que fundamente a escolha do modelo recomendado; um protocolo de avaliação com programadores com deficiência visual, aplicado de forma exploratória se for viável; e uma discussão das limitações da validação realizada. Em conjunto, esses resultados têm o potencial de evidenciar a aplicabilidade da Inteligência Artificial como ferramenta de apoio à acessibilidade na Engenharia de Software e de fornecer uma base para futuras pesquisas e soluções voltadas à inclusão de programadores com deficiência visual.
+As regiões são apresentadas em ordem decrescente de gravidade, e os pontos críticos aparecem agrupados pela função que os contém, e não como ocorrências isoladas: a região mais grave, o método \texttt{salvar}, concentra dois dos seis pontos e a gravidade máxima. Cada região é anunciada com o arquivo e a linha em que começa, com as funções que a chamam e com as dependências externas de que depende, informações extraídas do mapa do projeto; as duas regiões que nenhuma outra parte do projeto chama são indicadas como possíveis pontos de entrada do fluxo. O relatório produzido pelo protótipo é escrito sem acentuação, por decisão de projeto; o texto redigido pelo modelo de linguagem, apresentado na Seção~\ref{sec:resultgeracao}, segue a escrita do próprio modelo e é acentuado.
 
+\section{Geração das Explicações}\label{sec:resultgeracao}
 
-\chapter{Limitações e Trabalhos Futuros}\label{sec:limitacoes}
+Para exercitar o caminho em nuvem, o protótipo foi executado sobre esse mesmo projeto com o modelo \texttt{gemma4:31b}, hospedado em \texttt{ollama.com}. A configuração registrada na execução foi de 8192 \textit{tokens} de contexto, resposta máxima de 1500 \textit{tokens}, temperatura zero e semente 42, com o identificador da versão do modelo gravado junto do resultado; o \textit{prompt} da visão geral ocupou 885 \textit{tokens}. A visão geral e as explicações das duas regiões solicitadas foram geradas sem erro, em 3,06 segundos no total.
 
-\section{Limitações}
+A Figura~\ref{fig:explicar} mostra a execução com a geração de explicações ativada, e a Figura~\ref{fig:saida} reproduz, como texto, a visão geral e a explicação da região mais grave. O conteúdo é repetido em texto para que permaneça acessível a quem lê este trabalho com um leitor de tela, o que uma captura de tela não permite.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{execucao_explicar.png}
+  \caption{Execução do protótipo com a geração de explicações ativada, pelo comando \texttt{analisar -{}-explicar -{}-falar}, com o modelo executado localmente}
+  \legend{Fonte: Elaborado pelo autor. A imagem mostra o início da saída: o protótipo abriu o NVDA, gerou as cinco explicações e imprimiu a visão geral seguida das explicações por região.}
+  \label{fig:explicar}
+\end{figure}
+
+\input{figura_saida}
+
+Em uma amostra de três textos, o modelo manteve o marcador de inferência, utilizou frases de até vinte palavras e não empregou símbolos decorativos. Dois defeitos foram observados. Em uma das explicações, o nome de uma função foi escrito com sublinhado, contrariando a regra de forma da Seção~\ref{sec:estrategia}, que determina que os nomes sejam ditos sem soletração de símbolos. Em outra, o modelo atribuiu a uma gravidade uma justificativa que não consta nos dados enviados, isto é, afirmou como fato algo que não estava na análise estática. Por se tratar de uma amostra de três textos, sem verificação sistemática, esses resultados indicam que o caminho em nuvem funciona e que os dois defeitos justificam a verificação automática e a revisão manual (Seção~\ref{sec:verificador}); eles não permitem concluir sobre a qualidade do modelo.
+
+\section{Integração com o NVDA}\label{sec:resultnvda}
+
+A integração com o NVDA foi verificada em um computador com \textit{Windows}, segundo o procedimento da Seção~\ref{sec:validacao}. A biblioteca de 64 bits foi carregada, a função de teste da biblioteca respondeu com o NVDA em execução e o autor confirmou, por escuta, que o relatório foi falado pelo leitor de tela. A execução reproduzida na Figura~\ref{fig:execucao} corresponde a esse caminho completo: o comando foi digitado na pasta do projeto de exemplo, o relatório foi impresso no terminal e, com o NVDA aberto, falado pelo leitor de tela. Em uma execução posterior, com o NVDA fechado, o erro foi dito em palavras e o relatório seguiu apenas como texto, conforme a política de falhas descrita na Seção~\ref{sec:prototipo}.
+
+Os comportamentos que dependem de observação prolongada não foram registrados: a versão do NVDA utilizada, o efeito de chamadas consecutivas, a ocorrência de fala duplicada e o comportamento com o \textit{Windows} bloqueado (Seção~\ref{sec:limitacoes}).
+
+\section{Testes Automatizados}\label{sec:resulttestes}
+
+O protótipo conta com 198 testes automatizados, que cobrem a análise estática, o mapa do projeto, a montagem dos \textit{prompts}, a orquestração e a política de falhas, o cliente do Ollama, a integração com o NVDA, a linha de comando e a escolha da pasta analisada.
+
+Os testes não dependem de modelo de linguagem, de rede nem do NVDA, pois o cliente do Ollama é exercitado contra um servidor HTTP falso e a fala, contra uma biblioteca e um processo falsos. O único registro de execução disponível, obtido em \textit{Windows} com uma versão anterior da suíte, mostra 114 testes aprovados e 1 ignorado, além da falha de um teste sensível ao tempo de conexão, cujo limite foi ajustado em seguida. A suíte atual, com 198 testes, ainda não foi executada e registrada.
+
+\section{Limitações}\label{sec:limitacoes}
 
 A principal limitação é que a validação realizada até o momento é técnica: ela mostra que o código é analisado, que o texto é gerado e que o NVDA o fala, mas não mostra que as explicações ajudam, de fato, na compreensão do código nem que atendem às necessidades do público-alvo. Enquanto não houver avaliação com programadores com deficiência visual, o trabalho não pode afirmar benefício para a compreensão de código-fonte, apenas a viabilidade técnica e a conformidade com as regras de acessibilidade definidas. Mesmo que a avaliação exploratória seja realizada, a amostra pequena limitará a generalização dos resultados.
 
@@ -579,29 +617,33 @@ A análise limita-se a código Python. A resolução de chamadas por nome simple
 
 No modo em nuvem, o código analisado é enviado a um servidor de terceiros. A documentação consultada afirma que os \textit{prompts} e as respostas não são utilizados para treinar modelos, mas não informa o prazo de retenção, e os modelos hospedados podem ser descontinuados \cite{ollama2026nuvem}. Por isso, o argumento de privacidade da execução local não vale para esse modo, que é utilizado apenas com código de exemplo.
 
-A fala restringe-se ao NVDA no Windows. O protótipo ainda não verifica se o Windows está bloqueado ou em tela segura antes de enviar texto, como recomenda a documentação da biblioteca \cite{nvaccess2024controller}, envia o relatório inteiro em uma única chamada, e o comportamento diante de chamadas consecutivas e de fala duplicada ainda não foi registrado. A abertura automática do NVDA foi verificada apenas com uma biblioteca e um processo simulados.
-
-A forma de execução e o menu de pastas ainda não foram utilizados com o NVDA real nem por programadores com deficiência visual: a análise da pasta atual como padrão, a quantidade de itens por tela e a condução por uma pergunta de cada vez são decisões de projeto, e não resultados de avaliação. Ambos dependem de o leitor de tela falar o que o terminal imprime, e \textcite{latinoware6969} relatam que, nos ambientes de desenvolvimento Web avaliados, a saída do terminal é inacessível ou apenas parcialmente acessível. Além disso, quando apenas uma subpasta é analisada, as chamadas entre ela e o restante do projeto não aparecem no mapa.
-
-\section{Trabalhos Futuros}
-
-Como continuidade, pretende-se portar a ferramenta para os sistemas macOS e Linux. A análise estática, o menu de pastas e a geração de explicações não dependem do Windows, e a suíte de testes já é executada em Linux; o porte exige, portanto, implementar a fala com os leitores de tela desses sistemas, por meio da interface de fala já existente no protótipo, oferecer um comando de execução e uma instalação equivalentes aos do Windows e validar o funcionamento em cada sistema.
-
-Propõem-se também: a avaliação com programadores com deficiência visual, com mais participantes e em cenários reais de desenvolvimento, para medir a utilidade, a usabilidade e a efetividade das explicações; a personalização do nível de detalhe; a navegação pelos resultados, região por região, com a explicação gerada sob demanda; o suporte a outras linguagens de programação; e a integração da ferramenta a ambientes de desenvolvimento amplamente utilizados.
-
 
 \chapter{Conclusão}\label{sec:conclusao}
 
 % PENDENTE: atualizar o quarto parágrafo com os resultados do verificador automático e da comparação entre modelos, se forem concluídos antes da entrega.
 Este trabalho desenvolveu e avaliou tecnicamente um protótipo que gera explicações de código-fonte Python para programadores com deficiência visual, combinando a análise estática do código, responsável por identificar os pontos críticos de forma determinística, com modelos de linguagem de grande porte, responsáveis por redigir as explicações, que são entregues como texto e pela fala do leitor de tela NVDA. A proposta partiu de uma lacuna identificada na literatura: nenhum dos trabalhos analisados combina a explicação do código existente, a identificação de pontos críticos, a relação com a regra de negócio e a entrega do resultado por leitor de tela (Capítulo~\ref{sec:TrabRel}).
 
-O protótipo analisa projetos Python inteiros, reporta os arquivos com erro de sintaxe, agrupa os pontos críticos pela função que os contém e monta um mapa do projeto com o grafo de chamadas, de modo que cada explicação informe quem chama a região e o que ela chama. As explicações seguem regras de acessibilidade impostas no próprio \textit{prompt}, como frases curtas, ausência de recursos visuais e a marcação de toda dedução com a palavra \enquote{Inferência:}, e podem ser geradas por modelos executados localmente, sem que o código seja enviado a terceiros. Para analisar um projeto, basta entrar na sua pasta e digitar um único comando; um menu de pastas opcional permite escolhê-lo sem digitar o caminho.
+O protótipo analisa projetos Python inteiros, reporta os arquivos com erro de sintaxe, agrupa os pontos críticos pela função que os contém e monta um mapa do projeto com o grafo de chamadas, de modo que cada explicação informe quem chama a região e o que ela chama. As explicações seguem regras de acessibilidade impostas no próprio \textit{prompt}, como frases curtas, ausência de recursos visuais e a marcação de toda dedução com a palavra \enquote{Inferência:}, e podem ser geradas por modelos executados localmente, sem que o código seja enviado a terceiros. Para analisar um projeto, basta entrar na sua pasta e digitar um único comando.
 
-A validação técnica mostrou que o fluxo funciona de ponta a ponta: os 198 testes automatizados foram executados com sucesso em Linux, o NVDA falou o relatório em um computador com Windows e o caminho em nuvem gerou a visão geral e as explicações sem erro. A execução exploratória também evidenciou os limites do uso de modelos de linguagem: em uma amostra de três textos, o modelo respeitou o marcador de inferência e o limite de palavras por frase, mas deixou um nome de função com sublinhado e atribuiu a uma gravidade uma justificativa ausente dos dados enviados. Esses defeitos reforçam que a análise estática deve permanecer como fonte dos fatos e que o texto gerado precisa ser verificado.
+A validação técnica mostrou que o fluxo funciona de ponta a ponta: a análise estática produziu o relatório, o NVDA o falou em um computador com \textit{Windows} e o caminho em nuvem gerou a visão geral e as explicações sem erro. A execução exploratória também evidenciou os limites do uso de modelos de linguagem: em uma amostra de três textos, o modelo respeitou o marcador de inferência e o limite de palavras por frase, mas deixou um nome de função com sublinhado e atribuiu a uma gravidade uma justificativa ausente dos dados enviados. Esses defeitos reforçam que a análise estática deve permanecer como fonte dos fatos e que o texto gerado precisa ser verificado.
 
 Permanecem por concluir a verificação automática das explicações e a comparação entre os modelos candidatos, das quais dependem a escolha do modelo recomendado e a medição sistemática da conformidade com as regras de acessibilidade. Sobretudo, a validação realizada é técnica e não permite afirmar que as explicações ajudam, de fato, na compreensão do código; essa resposta depende da avaliação com programadores com deficiência visual proposta neste trabalho (Seção~\ref{sec:usuarios}).
 
-Como contribuição, o trabalho mostra a viabilidade técnica de separar a identificação dos pontos críticos, feita de forma determinística, da redação das explicações, feita pelo modelo de linguagem sob regras de forma pensadas para a escuta, e oferece uma base para a continuidade descrita no Capítulo~\ref{sec:limitacoes}, que inclui a avaliação com usuários e o porte da ferramenta para macOS e Linux.
+Como contribuição, o trabalho mostra a viabilidade técnica de separar a identificação dos pontos críticos, feita de forma determinística, da redação das explicações, feita pelo modelo de linguagem sob regras de forma pensadas para a escuta, e oferece uma base para a continuidade descrita na Seção~\ref{sec:futuros}, que inclui a avaliação com usuários e o porte da ferramenta para macOS e Linux.
+
+
+\section{Trabalhos Futuros}\label{sec:futuros}
+
+\subsection{Avaliação com programadores com deficiência visual}\label{sec:usuarios}
+
+A avaliação que permitiria afirmar benefício para a compreensão de código não foi realizada e é a continuidade mais importante deste trabalho. Propõe-se uma avaliação exploratória com programadores com deficiência visual que utilizem o NVDA, em que cada participante responderia a perguntas de compreensão sobre trechos de um projeto de exemplo em duas condições: com a explicação do protótipo, ouvida pelo NVDA, e sem ela, explorando o código apenas com o leitor de tela, em procedimento semelhante à comparação com e sem Inteligência Artificial adotada por \textcite{latinoware34224}. Seriam registrados o acerto das respostas, o tempo gasto e a percepção dos participantes sobre a utilidade, a clareza e o esforço. Estudos da área têm utilizado amostras pequenas, com quatro participantes em \textcite{latinoware34224} e dez em \textcite{latinoware20457}, o que limitaria a generalização dos resultados; a participação de pessoas exige ainda consentimento livre e esclarecido e a observância dos procedimentos de ética em pesquisa aplicáveis à instituição.
+
+\subsection{Porte para outros sistemas e demais continuidades}
+
+O porte da ferramenta para os sistemas \textit{macOS} e \textit{Linux} é outra continuidade. A análise estática e a geração de explicações não dependem de recursos específicos do \textit{Windows}; o que falta é implementar a fala com os leitores de tela desses sistemas, por meio da interface de fala já existente no protótipo, oferecer um comando de execução e uma instalação equivalentes aos do \textit{Windows} e validar o funcionamento em cada sistema.
+
+Propõem-se também: a personalização do nível de detalhe das explicações; a navegação pelos resultados, região por região, com a explicação gerada sob demanda; o suporte a outras linguagens de programação; e a integração da ferramenta a ambientes de desenvolvimento amplamente utilizados.
+
 
 % ----------------------------------------------------------
 % CRONOGRAMA: retirado do TCC II por orientação da orientadora

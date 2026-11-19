@@ -1,0 +1,19 @@
+\begin{tikzpicture}[
+    font=\small,
+    fun/.style={draw, thick, rounded corners=2pt, align=center, text width=4.3cm, minimum height=10mm, inner sep=3pt, fill=gray!8},
+    entrada/.style={fun, fill=blue!10},
+    critica/.style={fun, fill=orange!12},
+    seta/.style={-{Stealth[length=2.6mm]}, thick}
+  ]
+  \node[critica] (lote)  at (-3.3, 0)    {\texttt{contratar\_em\_lote}\\\footnotesize relatorios.py --- gravidade 4};
+  \node[critica] (sobre) at ( 3.3, 0)    {\texttt{setores\_sobrecarregados}\\\footnotesize relatorios.py --- gravidade 3};
+  \node[fun]              (cf)    at (-3.3,-2.3)  {\texttt{contratar\_funcionario}\\\footnotesize persistencia.py};
+  \node[critica]          (lim)   at ( 3.3,-2.3)  {\texttt{setor\_no\_limite}\\\footnotesize regras\_negocio.py --- gravidade 3};
+  \node[critica]          (salv)  at (-5.0,-4.6)  {\texttt{salvar}\\\footnotesize persistencia.py --- gravidade 5};
+  \node[critica]          (val)   at ( 0.4,-4.6)  {\texttt{validar\_contratacao}\\\footnotesize regras\_negocio.py --- gravidade 3};
+
+  \draw[seta] (lote)  -- (cf);
+  \draw[seta] (sobre) -- (lim);
+  \draw[seta] (cf.south) -- ++(0,-4mm) -| (salv.north);
+  \draw[seta] (cf.south) -- ++(0,-4mm) -| (val.north);
+\end{tikzpicture}

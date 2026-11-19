@@ -1,0 +1,17 @@
+\begin{figure}[htbp]
+  \centering
+  \caption{Relatório gerado pelo protótipo: visão geral do projeto e explicação da região mais grave}
+  \label{fig:saida}
+  \fbox{\begin{minipage}{0.92\linewidth}
+  \small
+  \textbf{Visão geral do projeto}
+
+  Inferência: o propósito do projeto é gerenciar a contratação de funcionários e monitorar a carga dos setores. Primeiro, o fluxo começa pelas funções contratar em lote ou setores sobrecarregados no arquivo relatórios. Em seguida, o código conversa com um sistema externo através do método execute da conexão. Por fim, a revisão deve começar pela função salvar no arquivo persistência. Esta função é a região mais grave com dois pontos críticos e gravidade máxima cinco de cinco.
+
+  \medskip
+  \textbf{salvar(self, funcionario, setor)}
+
+  Este método salva os dados de um funcionário e seu setor no banco de dados. Primeiro, o ponto mais grave está na linha 14. Esta função utiliza a dependência externa self.conexao.execute para realizar a gravação. Inferência: esta operação insere o nome do funcionário e o identificador do setor em uma tabela. Em seguida, há um ponto crítico na linha 13. Esta função utiliza um bloco de tratamento de exceção para capturar erros. Por fim, qualquer falha gera um erro de tempo de execução com a mensagem de falha ao salvar.
+  \end{minipage}}
+  \legend{Fonte: saída do protótipo sobre o projeto de exemplo, com o modelo \texttt{gemma4:31b}. O texto é reproduzido como foi gerado, inclusive quanto à forma.}
+\end{figure}
