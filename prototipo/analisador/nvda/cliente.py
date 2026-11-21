@@ -164,7 +164,7 @@ def abrir_nvda(executavel):
     O nvda.exe instalado tem acesso especial a interface (uiAccess) no
     manifesto, e o Windows recusa abri-lo por CreateProcess, que e o que o
     subprocess usa: erro 740, "A operacao solicitada requer elevacao"
-    (observado em 08/11/2026). O ShellExecute, usado pelo os.startfile, e o
+    (testado). O ShellExecute, usado pelo os.startfile, e o
     caminho dos atalhos. O NVDA continua aberto depois que a ferramenta
     termina."""
     _exigir_windows()

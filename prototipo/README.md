@@ -1,8 +1,10 @@
 # Analisador de codigo acessivel - prototipo (TCC II)
 
-Implementa a arquitetura descrita no documento **"TCC - Analise Critica e
-Proposta de Evolucao"** (secoes 7, 8, 12 e 13). Nao substitui o documento:
-consulte-o para o raciocinio por tras de cada decisao.
+Prototipo do Trabalho de Conclusao de Curso "Geracao de Explicacoes de Codigo
+Baseadas em Inteligencia Artificial com Foco na Identificacao de Pontos
+Criticos e Alinhamento a Regra de Negocio para Programadores com Deficiencia
+Visual". A monografia, com a arquitetura e as decisoes de projeto, esta na
+pasta `Parte escrita` deste repositorio.
 
 ## Estado atual
 
@@ -12,22 +14,23 @@ consulte-o para o raciocinio por tras de cada decisao.
 - **Fase 2, parte deterministica: funcionando.** Mapa estrutural do projeto
   (`analisador/contexto`): definicoes, imports e grafo local de chamadas
   entre arquivos.
-- **Fase 2, parte LLM: implementada para modelo local (Ollama), NAO
-  validada com modelo real.** Ver "O que foi e o que nao foi validado".
-  A implementacao para a API do Claude esta adiada: por ora so modelos
-  locais e abertos.
-- **Fase 4, fala via NVDA (so Windows): implementada, NAO validada com o
-  NVDA real.** Ver "Fala via NVDA (Windows)".
+- **Fase 2, parte LLM: implementada e testada** com modelo local (`qwen3:8b`)
+  e em nuvem (`gemma4:31b`). Ver "O que foi e o que nao foi testado". A API
+  do Claude nao foi implementada: o prototipo usa modelos abertos, locais ou
+  hospedados no Ollama.
+- **Fase 4, fala via NVDA (so Windows): implementada e testada com o NVDA
+  real.** Ver "Fala via NVDA (Windows)".
 - **Comando `analisar` e menu de pastas (Fase 4, primeira parte):
   funcionando.** A pessoa entra na pasta do projeto com `cd` e digita
   `analisar`: sem caminho, vale a pasta atual. O `instalar_comando.ps1` deixa
   o comando disponivel em qualquer pasta do Windows, e `--menu` escolhe a
-  pasta por um menu, um nivel por vez. Coberto por testes; **ainda nao
-  testado com o NVDA real nem com uma pessoa cega** (ver "Comando analisar
-  (Windows)" e "O que foi e o que nao foi validado").
-- Fase 3 (formatacao acessivel definitiva) e navegacao pelos resultados
-  (proxima regiao, repetir, explicacao sob demanda): pastas criadas com
-  docstrings, sem implementacao.
+  pasta por um menu, um nivel por vez. Coberto por testes; o comando foi
+  testado com o NVDA real e o menu, no Windows; **nenhum dos dois foi testado
+  por uma pessoa cega** (ver "Comando analisar (Windows)" e "O que foi e o
+  que nao foi testado").
+- Fase 3 (verificacao automatica das explicacoes) e navegacao pelos
+  resultados (proxima regiao, repetir, explicacao sob demanda): nao
+  implementadas.
 
 O escopo de analise e o **projeto inteiro**, nao um arquivo isolado.
 
@@ -53,7 +56,7 @@ faz os passos acima (acha o Python mesmo sem PATH), roda os testes, confere o
 NVDA e a DLL e grava tudo em `preparar_windows.log`. Com `-Falar`, o NVDA
 fala uma frase de teste.
 
-macOS ou Linux:
+macOS ou Linux (nao testado):
 
 ```bash
 cd prototipo
@@ -119,7 +122,7 @@ que nao e `.py` tambem sao ditos em palavras, com codigo de saida 1, e uma
 pasta sem Python gera o aviso "Nenhum arquivo Python foi encontrado", sem
 chamar o modelo.
 
-Em macOS e Linux nao ha instalador: rode da pasta `prototipo` com
+Em macOS e Linux (nao testado) nao ha instalador: rode da pasta `prototipo` com
 `PYTHONPATH=. python -m analisador caminho/do/projeto`, ou com `--menu`.
 
 ### Menu de pastas (`--menu`)
@@ -174,7 +177,7 @@ Opcoes: `--modelo`, `--host`, `--contexto` (padrao 8192 tokens),
 `OLLAMA_HOST`.
 
 Modelos candidatos para 16 GB (tamanhos segundo a biblioteca do Ollama;
-confira com `ollama list` e meca no seu Mac):
+confira com `ollama list`):
 
 - `qwen3:8b` - padrao. Cabe com folga, treinado em 119 idiomas.
 - `qwen3:14b` - mais qualidade, ocupa mais memoria.
@@ -189,8 +192,8 @@ ollama.com, como o `gemma4:31b`. A pagina do modelo lista tambem as tags
 `gemma4:cloud` e `gemma4:31b-cloud`. **O codigo analisado sai do seu
 computador neste modo.** A documentacao do Ollama diz que prompts e respostas
 da nuvem nao sao usados para treinar modelos e nao informa prazo de retencao.
-Teste com codigo de exemplo, nunca com codigo privado, e registre no texto do
-TCC que o argumento de privacidade da execucao local nao vale para este modo.
+Use com codigo de exemplo, nunca com codigo privado: o argumento de
+privacidade da execucao local nao vale para este modo.
 
 1. Crie uma chave de API em ollama.com/settings/keys.
 2. Defina a chave so na sessao do terminal. Nunca no codigo, em arquivo
@@ -210,8 +213,9 @@ python -m analisador caminho\do\projeto --explicar --host https://ollama.com --m
 A chave so e enviada ao host `ollama.com`. Sem a chave o erro aparece na hora,
 e uma chave recusada (401 ou 403) interrompe a geracao. Na API direta o nome do
 modelo e o da lista do servidor (`gemma4:31b`); no aplicativo ou na CLI do
-Ollama instalado o sufixo e `:cloud` (`gemma4:31b-cloud`). Os limites de uso
-dependem do plano: ver ollama.com/pricing e ollama.com/settings/usage.
+Ollama instalado o sufixo e `:cloud` (`gemma4:31b-cloud`). O uso e cobrado
+por token (ollama.com/pricing); sem creditos, o servidor recusa as
+requisicoes com o erro 402.
 
 ## Fala via NVDA (Windows)
 
@@ -244,61 +248,59 @@ Fora do Windows nao ha falador: o NVDA nao existe em macOS nem em Linux.
 A interface `Falador` (`analisador/nvda/base.py`) deixa espaco para outro
 sistema de fala, ainda nao implementado.
 
-## O que foi e o que nao foi validado
+## O que foi e o que nao foi testado
 
-Validado por testes automatizados (198 testes, sem modelo, rede, NVDA nem
-Windows): analise estatica, grafo de chamadas, montagem dos prompts,
-orquestracao, politica de falhas, CLI (com um LLM falso), analise da pasta
-atual e avisos de caminho errado, e menu de pastas (com entrada falsa);
+Coberto por testes automatizados (198 testes, que nao dependem de modelo,
+rede, NVDA nem Windows): analise estatica, grafo de chamadas, montagem dos
+prompts, orquestracao, politica de falhas, CLI (com um LLM falso), analise da
+pasta atual e avisos de caminho errado, e menu de pastas (com entrada falsa);
 cliente do Ollama contra um servidor HTTP falso que reproduz o formato
 documentado da API; falador do NVDA contra uma DLL falsa, busca da DLL e
 opcao `--falar` da CLI com um falador falso; chave de API da nuvem enviada
-so ao host `ollama.com`. Em 08/11/2026 os 198 passaram em Linux com Python
-3.12; com Python 3.10, o teste do `PYTHONSAFEPATH` e pulado, porque o
-recurso so existe a partir do 3.11.
+so ao host `ollama.com`. A suite atual ainda nao foi executada e registrada.
+O registro disponivel, no Windows e com uma versao anterior da suite, tem 114
+testes aprovados e 1 ignorado, alem da falha de um teste sensivel ao tempo de
+conexao, cujo limite foi ajustado em seguida.
 
-**Nao validado:**
+**Testado no Windows:**
 
-- Comando `analisar` e menu de pastas: nunca foram usados com o NVDA real
-  nem por uma pessoa cega. A pasta atual como padrao, sete itens por tela,
-  texto sem acento e uma pergunta por vez sao decisoes de projeto, nao
-  resultados. Nao se sabe se a voz do NVDA le melhor com acento. Em
-  08/11/2026, o `analisar.cmd` abriu o menu de pastas no Windows (entao o
-  padrao sem caminho); com o NVDA fechado, o erro foi dito e o menu seguiu so
-  em texto. O `instalar_comando.ps1` e a analise da pasta atual ainda nao
-  rodaram no Windows.
-- Abertura automatica do NVDA: a primeira tentativa real, em 08/11/2026,
-  falhou com o erro 740 ("A operacao solicitada requer elevacao"), porque o
-  NVDA era aberto por CreateProcess. Ele passou a ser aberto pelo ShellExecute,
-  como um atalho, e isso ainda precisa ser conferido no Windows, assim como o
-  tempo para responder e o indicador de outro leitor de tela ativo.
-- NVDA: em 18/10/2026 a DLL x64 carregou e `testIfRunning` respondeu com o
-  NVDA aberto, e o autor informou que o NVDA esta funcionando. Ainda sem
-  registro: a versao do NVDA; se o relatorio inteiro vai em uma chamada ou
-  ha limite de tamanho; se chamadas seguidas se enfileiram ou se
-  interrompem; se o terminal, ao imprimir o mesmo texto, faz o NVDA falar
-  em duplicidade; e o que acontece com o Windows bloqueado (a documentacao
-  do NV Access manda conferir isso antes de enviar texto).
-- Nuvem do Ollama: uma execucao real em 18/10/2026 (gemma4:31b, host
-  ollama.com, projeto_exemplo, duas regioes) funcionou. O nome do modelo, a
-  chave e o campo `think: false` foram aceitos, e a geracao levou 3,06
-  segundos no total. O formato real do erro de chave recusada nao foi
-  conferido.
-- Nenhum teste rodou contra um Ollama local. O formato de resposta de erro
-  para modelo ausente nao esta descrito na documentacao do Ollama; o
-  cliente trata de forma defensiva (status 404 e mensagem do servidor),
-  mas o comportamento real precisa ser conferido.
-- A qualidade das explicacoes em portugues brasileiro e a obediencia do
-  modelo as regras de acessibilidade do prompt nao foram medidas de forma
-  sistematica. Uma amostra de tres textos do gemma4:31b na nuvem manteve o
-  marcador de inferencia, usou frases de ate vinte palavras e nao usou
-  simbolos decorativos, mas deixou um sublinhado em um nome de funcao e deu
-  a uma gravidade uma justificativa que nao consta nos dados enviados. A
-  medicao sistematica e o trabalho da Fase 3 (verificar a saida) e da
-  avaliacao comparativa de modelos.
-- O campo `think` (raciocinio) foi escolhido por modelo a partir da
-  documentacao (`False` por padrao, `"low"` para gpt-oss). So o `False` com
-  gemma4:31b na nuvem foi exercitado.
+- `analisar --falar` na pasta do projeto de exemplo: o relatorio foi impresso
+  e falado pelo NVDA. A DLL x64 carregou e `testIfRunning` respondeu com o
+  NVDA aberto.
+- `analisar` sem caminho, dentro da pasta do projeto: a pasta atual foi
+  analisada.
+- Menu de pastas, aberto pelo `analisar.cmd`.
+- Explicacao com modelo local (`qwen3:8b`): visao geral e quatro regioes.
+- Explicacao em nuvem (`gemma4:31b`, projeto de exemplo, duas regioes): 3,06
+  segundos no total, com o campo `think: false` aceito. Sem creditos de uso,
+  o servidor recusa as requisicoes (erro 402).
+- Modelo ausente: a verificacao inicial informa o erro em palavras e lista os
+  modelos instalados.
+- Abertura automatica do NVDA: por CreateProcess, o Windows recusou com o erro
+  740 ("A operacao solicitada requer elevacao"); pelo ShellExecute, como um
+  atalho, o NVDA abriu e respondeu. Em uma das execucoes com abertura
+  automatica, o NVDA nao aceitou o texto para falar; o erro foi dito em
+  palavras e o relatorio saiu so como texto.
+
+**Nao testado:**
+
+- Uso por uma pessoa cega: comando, menu e explicacoes. A pasta atual como
+  padrao, sete itens por tela, texto sem acento e uma pergunta por vez sao
+  decisoes de projeto, nao resultados.
+- Menu de pastas com o NVDA falando.
+- Versao do NVDA; limite de tamanho do texto em uma chamada; chamadas
+  seguidas; fala duplicada quando o terminal imprime o mesmo texto; Windows
+  bloqueado. O prototipo nao confere se o Windows esta bloqueado, como
+  recomenda a documentacao do NV Access.
+- Indicador de outro leitor de tela ativo (so com testes simulados).
+- Formato real do erro de chave recusada (401 ou 403).
+- Campo `think: "low"` (familia gpt-oss).
+- Qualidade das explicacoes medida de forma sistematica e comparacao entre
+  modelos. Nos textos examinados, os modelos mantiveram o marcador de
+  inferencia, mas escreveram nomes de funcao com sublinhado e fizeram
+  afirmacoes sem respaldo nos dados enviados, como uma divisao por zero que
+  nao existe no codigo. A medicao sistematica depende da Fase 3, nao
+  implementada.
 
 ## Estrutura
 
@@ -321,7 +323,7 @@ analisador/
   analise.py          orquestracao: parser + contexto + regras
   explicacao.py       orquestracao: visao geral + uma explicacao por regiao
   __main__.py         runner da linha de comando: analisar [caminho] [opcoes]
-  formatacao/         Fase 3 - texto acessivel definitivo (vazio)
+  formatacao/         reservado para a Fase 3 (vazio)
   nvda/
     base.py           interface Falador e erros
     cliente.py        NvdaFalador: ctypes sobre o nvdaControllerClient.dll
@@ -390,7 +392,7 @@ testes/
   de omitida.
 - **Regras de acessibilidade no prompt, nao so no pos-processamento.**
   Pedir a forma certa de primeira produz texto melhor que limpar texto
-  errado depois. A Fase 3 vai conferir se o modelo obedeceu.
+  errado depois. A Fase 3, nao implementada, conferiria se o modelo obedeceu.
 - **Inferencia tem marcador fixo.** Regra de negocio deduzida de nomes abre
   com a palavra "Inferência:". Quem ouve por sintese de voz nao consegue
   ver que algo e suposicao; precisa ouvir. Por ser palavra fixa, a Fase 3
@@ -404,8 +406,8 @@ testes/
   versoes do Ollama ou hardwares diferentes.
 - **Sem caminho, vale a pasta atual; o menu e opcional.** A primeira versao
   abria o menu sempre que faltava o caminho e, como o atalho so funcionava de
-  dentro da pasta `prototipo`, o menu comecava sempre nela. Em 08/11/2026, o
-  autor avaliou esse passo obrigatorio como pouco pratico: quem ja esta na
+  dentro da pasta `prototipo`, o menu comecava sempre nela. O autor avaliou
+  esse passo obrigatorio como pouco pratico: quem ja esta na
   pasta do projeto, ou sabe o caminho, so precisa do comando. O menu ficou em
   `--menu`, para quem prefere escolher sem digitar caminho.
 - **Pasta pessoal e raiz do disco so com pedido explicito.** Todo terminal

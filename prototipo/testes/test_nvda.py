@@ -2,7 +2,7 @@
 Fala via NVDA e opcao --falar da CLI, sem NVDA, sem DLL e sem Windows:
 a DLL e substituida por um objeto falso e o falador da CLI por um falso.
 Nada aqui prova que o NVDA de verdade fala; isso so se confere no Windows,
-com o NVDA aberto (ver README, "O que nao foi validado").
+com o NVDA aberto (ver README, "O que foi e o que nao foi testado").
 """
 import json
 import sys
@@ -476,8 +476,8 @@ def test_cli_abre_o_nvda_fechado_e_fala_o_relatorio(monkeypatch, capsys, projeto
 
 
 def test_abrir_nvda_usa_o_caminho_de_um_atalho(monkeypatch, tmp_path):
-    # O nvda.exe instalado recusa CreateProcess (erro 740, visto no Windows em
-    # 08/11/2026); ele precisa ser aberto pelo ShellExecute, que e o os.startfile.
+    # O nvda.exe instalado recusa CreateProcess (erro 740, testado no Windows);
+    # ele precisa ser aberto pelo ShellExecute, que e o os.startfile.
     abertos = []
     monkeypatch.setattr(cliente, "_e_windows", lambda: True)
     monkeypatch.setattr(cliente.os, "startfile", abertos.append, raising=False)
