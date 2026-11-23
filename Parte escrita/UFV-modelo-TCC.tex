@@ -320,7 +320,7 @@ A janela de contexto limita a quantidade de texto, medida em \textit{tokens}, qu
 
 A engenharia de \textit{prompts} consiste em fornecer ao modelo instruções de tarefa, em linguagem natural ou por vetores aprendidos, sem alterar seus parâmetros \cite{sahoo2024prompt}. \textcite{sahoo2024prompt} organizam as técnicas em uma taxonomia por área de aplicação, apresentando, para cada uma, a abordagem, os modelos e os conjuntos de dados empregados e seus pontos fortes e limitações. Entre as técnicas descritas na literatura estão o fornecimento de poucos exemplos no próprio \textit{prompt} \cite{brown2020fewshot} e o encadeamento de raciocínio (\textit{chain-of-thought}), em que os exemplos incluem os passos intermediários da solução, associado por \textcite{wei2022cot} a ganhos em tarefas aritméticas, de senso comum e simbólicas.
 
-Para explicações destinadas à escuta, a engenharia de \textit{prompts} assume uma função adicional: além de orientar o conteúdo, precisa impor a forma do texto, pois quem ouve a explicação não pode retornar a um trecho nem distinguir visualmente fatos de suposições. Por isso, o protótipo emprega instruções diretas, sem exemplos, que combinam regras de conteúdo e regras de forma, e fornece ao modelo dados já extraídos pela análise estática, de modo que ele explique o que foi encontrado em vez de decidir o que é crítico (Seção~\ref{sec:estrategia}). Como o ajuste de modelos para seguir instruções melhora, mas não elimina, falhas de obediência \cite{ouyang2022instructions}, a verificação automática do texto produzido integra a validação do protótipo (Seção~\ref{sec:validacao}).
+Para explicações destinadas à escuta, a engenharia de \textit{prompts} assume uma função adicional: além de orientar o conteúdo, precisa impor a forma do texto, pois quem ouve a explicação não pode retornar a um trecho nem distinguir visualmente fatos de suposições. Por isso, o protótipo emprega instruções diretas, sem exemplos, que combinam regras de conteúdo e regras de forma, e fornece ao modelo dados já extraídos pela análise estática, de modo que ele explique o que foi encontrado em vez de decidir o que é crítico (Seção~\ref{sec:estrategia}). Como o ajuste de modelos para seguir instruções melhora, mas não elimina, falhas de obediência \cite{ouyang2022instructions}, o texto produzido foi examinado em relação a essas regras (Seção~\ref{sec:verificador}).
 
 \subsection{Inteligência Artificial Aplicada à Engenharia de \textit{Software}}\label{sec:IAES}
 
@@ -358,7 +358,7 @@ Entre as limitações, a amostra é muito pequena, a análise é predominantemen
 
 \textcite{latinoware40920} apresentam o WAE (\textit{Web Accessibility Engine}), ferramenta que reúne, em um único fluxo, a edição, a transpilação e a verificação de acessibilidade de páginas Web estáticas produzidas por programadores cegos ou com baixa visão. A partir de uma revisão da literatura, os autores adotaram o paradigma de codificação acessível \textit{Grid Coding}, que organiza o código em uma grade navegável por tecnologias assistivas, e a linguagem YAML, escolhida pela clareza, pela simplicidade e pela semelhança de sua estrutura com a linguagem natural. O programador edita a página em uma grade, em um editor Web construído apenas com componentes nativos do HTML; a grade é convertida em YAML, e uma API a transpila para HTML semântico. A acessibilidade foi avaliada com o Avaliador e Simulador de Acessibilidade em Sítios (ASES), componente a componente e com o limiar de 95\%: oito dos nove componentes apresentados nos resultados atingiram o limiar, e o subtítulo obteve 90,35\%, por gerar um título de segundo nível sem um título de primeiro nível.
 
-A saída do WAE não foi avaliada por usuários cegos ou com baixa visão: o único teste com usuário, com um participante cego, foi realizado em outra plataforma e serviu para orientar o desenvolvimento, e os autores indicam, como trabalho futuro, estudos com grupos maiores de programadores cegos. O trabalho é relevante para esta pesquisa por promover a acessibilidade no desenvolvimento de \textit{software} por meio de uma estrutura de codificação organizada, aproximando-se do objetivo de gerar explicações estruturadas e semanticamente orientadas; a ferramenta, no entanto, é voltada à produção de páginas Web, e não à explicação de código existente. Como o ASES avalia páginas Web, ele também não se aplica a explicações em texto; por isso, este trabalho define critérios próprios para verificar a conformidade das explicações (Seção~\ref{sec:verificador}), mantendo, porém, a ideia de empregar uma verificação automática como parte da validação.
+A saída do WAE não foi avaliada por usuários cegos ou com baixa visão: o único teste com usuário, com um participante cego, foi realizado em outra plataforma e serviu para orientar o desenvolvimento, e os autores indicam, como trabalho futuro, estudos com grupos maiores de programadores cegos. O trabalho é relevante para esta pesquisa por promover a acessibilidade no desenvolvimento de \textit{software} por meio de uma estrutura de codificação organizada, aproximando-se do objetivo de gerar explicações estruturadas e semanticamente orientadas; a ferramenta, no entanto, é voltada à produção de páginas Web, e não à explicação de código existente. Como o ASES avalia páginas Web, ele também não se aplica a explicações em texto; por isso, este trabalho define critérios próprios para examinar a conformidade das explicações (Seção~\ref{sec:verificador}) e propõe automatizar esse exame como trabalho futuro (Seção~\ref{sec:verificacaofutura}).
 
 \section{Diretrizes de Acessibilidade em Ambientes de Desenvolvimento Integrado para Estudantes Cegos}
 
@@ -380,7 +380,7 @@ Os trabalhos apresentados complementam-se. \textcite{latinoware34224}, \textcite
 
 \chapter{Métodos}\label{sec:metodos}
 
-A metodologia deste trabalho organiza-se em etapas que vão da fundamentação teórica à validação de um protótipo funcional de uma ferramenta baseada em Inteligência Artificial para a geração de explicações estruturadas de código-fonte. O foco é a identificação de pontos críticos do código e o alinhamento à regra de negócio, com o objetivo de apoiar a compreensão de código-fonte por programadores com deficiência visual. A abordagem é guiada pelas lacunas identificadas nos trabalhos relacionados (Capítulo~\ref{sec:TrabRel}), e o protótipo foi desenvolvido de forma incremental, em quatro fases: análise estática do código (Fase 1); mapa do projeto e geração de explicações por modelos de linguagem (Fase 2); verificação automática das explicações (Fase 3, ainda não implementada); e interface de terminal acessível, com execução por um único comando e fala pelo leitor de tela (Fase 4).
+A metodologia deste trabalho organiza-se em etapas que vão da fundamentação teórica à validação de um protótipo funcional de uma ferramenta baseada em Inteligência Artificial para a geração de explicações estruturadas de código-fonte. O foco é a identificação de pontos críticos do código e o alinhamento à regra de negócio, com o objetivo de apoiar a compreensão de código-fonte por programadores com deficiência visual. A abordagem é guiada pelas lacunas identificadas nos trabalhos relacionados (Capítulo~\ref{sec:TrabRel}), e o protótipo foi desenvolvido de forma incremental, em fases: análise estática do código (Fase 1); mapa do projeto e geração de explicações por modelos de linguagem (Fase 2); e interface de terminal acessível, com execução por um único comando e fala pelo leitor de tela (Fase 4). A verificação automática das explicações, prevista como Fase 3, será tratada em trabalho futuro (Seção~\ref{sec:verificacaofutura}).
 
 \section{Revisão e Análise da Literatura}
 
@@ -456,7 +456,7 @@ Para a análise estrutural, utilizou-se a biblioteca \textit{Tree-sitter}, um ge
 
 A partir da AST, o protótipo extrai também as definições (funções, métodos e classes), as importações e as chamadas de cada arquivo e monta um mapa do projeto, com o grafo local de chamadas entre arquivos. O mapa permite responder, para cada ponto crítico, em que função ele está, quem chama essa função e o que ela chama. A resolução das chamadas é feita pelo nome simples, com prioridade para o próprio arquivo e depois para os arquivos importados, sem inferência de tipos; os casos ambíguos são registrados, e não ocultados.
 
-A geração das explicações é feita por uma interface única, denominada \texttt{Explicador\-LLM}, de modo que o restante da ferramenta (\textit{prompts}, orquestração e linha de comando) não depende do modelo utilizado: trocar de modelo equivale a alterar um parâmetro. A implementação atual utiliza a API nativa do Ollama, na qual o tamanho do contexto, que o protótipo define por padrão em 8192 \textit{tokens}. Um \textit{prompt} que não cabe no contexto configurado é recusado, e não truncado em silêncio. O mesmo cliente acessa modelos locais e modelos hospedados em ollama.com; neste caso, a chave de API é lida de uma variável de ambiente e enviada apenas a esse servidor.
+A geração das explicações é feita por uma interface única, denominada \texttt{Explicador\-LLM}, de modo que o restante da ferramenta (\textit{prompts}, orquestração e linha de comando) não depende do modelo utilizado: trocar de modelo equivale a alterar um parâmetro. A implementação atual utiliza a API nativa do Ollama, na qual o protótipo define o tamanho do contexto de cada requisição, com 8192 \textit{tokens} por padrão. Um \textit{prompt} que não cabe no contexto configurado é recusado, e não truncado em silêncio. O mesmo cliente acessa modelos locais e modelos hospedados em ollama.com; neste caso, a chave de API é lida de uma variável de ambiente e enviada apenas a esse servidor.
 
 A política de falhas foi pensada para quem utiliza a saída sem ver a tela. As falhas de configuração, que se repetiriam em toda requisição (servidor fora do ar, modelo ausente e chave de API recusada), interrompem a geração imediatamente; as demais, como resposta vazia ou tempo esgotado, afetam apenas a região correspondente, que é declarada sem explicação em vez de omitida.
 
@@ -524,19 +524,9 @@ Uma das estratégias consiste em verificar, em um ambiente controlado e com o NV
 
 São utilizadas apenas as funções de fala e de cancelamento disponíveis desde a primeira versão da biblioteca, e não as funções introduzidas na versão 2.0, que exigem o NVDA 2024.1 ou posterior \cite{nvaccess2024controller}, o que amplia a compatibilidade com versões anteriores do leitor de tela.
 
-\subsection{Verificação Automática das Explicações}\label{sec:verificador}
+\subsection{Exame das Explicações Geradas}\label{sec:verificador}
 
-Foi especificado, mas não implementado (Seção~\ref{sec:implementado}), um verificador que confira, sobre o texto produzido pelo modelo, a obediência às regras de forma e de conteúdo da Seção~\ref{sec:estrategia}. Os critérios verificáveis automaticamente são:
-
-\begin{itemize}
-  \item a presença do marcador \enquote{Inferência:} quando a explicação contiver dedução da regra de negócio;
-  \item a extensão das frases, com limite de vinte palavras;
-  \item a ausência de tabelas, listas, títulos, formatação e símbolos decorativos;
-  \item a ausência de nomes de função com sublinhado, como o observado na execução exploratória (Seção~\ref{sec:resultgeracao});
-  \item a cobertura dos pontos críticos, isto é, a menção, na explicação de cada região, de todos os pontos críticos enviados ao modelo.
-\end{itemize}
-
-Esses critérios verificam a forma e a cobertura, mas não a veracidade do conteúdo. Afirmações sem respaldo nos dados enviados, como a justificativa atribuída a uma gravidade na execução exploratória, exigem a revisão manual de uma amostra das explicações.
+As explicações geradas nas execuções do protótipo foram lidas e comparadas com as regras de forma e de conteúdo da Seção~\ref{sec:estrategia}. Foram observados a presença do marcador \enquote{Inferência:}, a extensão das frases, com limite de vinte palavras, o número de frases de cada explicação, a ausência de símbolos decorativos e a escrita dos nomes de função sem sublinhado. As afirmações do texto foram conferidas com o código analisado e com os dados enviados ao modelo, pois a obediência às regras de forma não garante a veracidade do conteúdo. Os resultados são apresentados na Seção~\ref{sec:resultgeracao}.
 
 % \subsection{Comparação entre Modelos}\label{sec:comparacao}
 
@@ -559,7 +549,7 @@ Este capítulo apresenta o protótipo implementado, os resultados da sua execuç
 
 \section{O Protótipo Implementado}\label{sec:implementado}
 
-Das quatro fases previstas no Capítulo~\ref{sec:metodos}, três estão implementadas. A Fase 1 analisa estaticamente projetos \textit{Python} inteiros e identifica os pontos críticos; a Fase 2 monta o mapa estrutural do projeto e gera as explicações por modelo executado localmente ou em nuvem; e a Fase 4 entrega o resultado como texto e pela fala do NVDA, com execução por um único comando na pasta do projeto. A Fase 3, de verificação automática das explicações, não foi implementada (Seção~\ref{sec:verificador}).
+Foram implementadas as Fases 1, 2 e 4 descritas no Capítulo~\ref{sec:metodos}. A Fase 1 analisa estaticamente projetos \textit{Python} inteiros e identifica os pontos críticos; a Fase 2 monta o mapa estrutural do projeto e gera as explicações por modelo executado localmente ou em nuvem; e a Fase 4 entrega o resultado como texto e pela fala do NVDA, com execução por um único comando na pasta do projeto.
 
 \section{Análise Estática do Projeto de Exemplo}\label{sec:resultanalise}
 
@@ -570,8 +560,8 @@ Foram identificados seis pontos críticos, de cinco tipos distintos, distribuíd
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\linewidth]{execucao_nvda.png}
-  \caption{Execução do protótipo sobre o projeto de exemplo, com o comando \texttt{analisar -{}-falar}, e o relatório produzido pela análise estática}
-  \legend{Fonte: Elaborado pelo autor. A execução ocorreu em \textit{Windows}, com o NVDA aberto; além de impresso no terminal, o relatório foi falado pelo leitor de tela.}
+  \caption{Execução do protótipo sobre o projeto de exemplo, com o comando \texttt{analisar -{}-falar}, e o relatório produzido pela análise estática. A execução ocorreu em \textit{Windows}, com o NVDA aberto; além de impresso no terminal, o relatório foi falado pelo leitor de tela.}
+  \legend{Fonte: Elaborado pelo autor. }
   \label{fig:execucao}
 \end{figure}
 
@@ -586,8 +576,8 @@ A Figura~\ref{fig:explicar} mostra uma execução com a geração de explicaçõ
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\linewidth]{execucao_explicar.png}
-  \caption{Execução do protótipo com a geração de explicações ativada, pelo comando \texttt{analisar -{}-explicar -{}-falar}, com o modelo executado localmente}
-  \legend{Fonte: Elaborado pelo autor. A imagem mostra o início da saída: o protótipo abriu o NVDA, gerou as cinco explicações e imprimiu a visão geral seguida das explicações por região.}
+  \caption{Execução do protótipo com a geração de explicações ativada, pelo comando \texttt{analisar -{}-explicar -{}-falar}, com o modelo executado localmente. A imagem mostra o início da saída: o protótipo abriu o NVDA, gerou as cinco explicações e imprimiu a visão geral seguida das explicações por região. Este momento, o NVDA está usanda fala para explicar o contéudo gerado}
+  \legend{Fonte: Elaborado pelo autor.}
   \label{fig:explicar}
 \end{figure}
 
@@ -597,7 +587,7 @@ Nos três textos gerados pelo \texttt{gemma4:31b}, o modelo manteve o marcador d
 
 Na execução local, o trecho reproduzido na Figura~\ref{fig:explicar} apresenta defeitos do mesmo tipo. O \texttt{qwen3:8b} afirmou haver, na linha 26 do arquivo \texttt{relatorios.py}, uma divisão por zero que não existe no código, e afirmou que o tratamento de exceção do método \texttt{salvar} evita o encerramento abrupto do programa, embora o bloco relance o erro. O modelo também escreveu nomes de função com sublinhado e ultrapassou, em uma das regiões, o limite de doze frases.
 
-Por se tratar de poucos textos, examinados sem verificação sistemática, esses resultados indicam que a geração funciona nos caminhos local e em nuvem e que os defeitos observados justificam a verificação automática e a revisão manual (Seção~\ref{sec:verificador}); eles não permitem concluir sobre a qualidade dos modelos nem compará-los.
+Por se tratar de poucos textos, examinados sem verificação sistemática, esses resultados indicam que a geração funciona nos caminhos local e em nuvem e que os defeitos observados justificam a verificação automática proposta como trabalho futuro (Seção~\ref{sec:verificacaofutura}), sem dispensar a revisão manual; eles não permitem concluir sobre a qualidade dos modelos nem compará-los.
 
 \section{Integração com o NVDA}\label{sec:resultnvda}
 
@@ -615,7 +605,7 @@ Os testes não dependem de modelo de linguagem, de rede nem do NVDA, pois o clie
 
 A principal limitação é que a validação realizada até o momento é técnica: ela mostra que o código é analisado, que o texto é gerado e que o NVDA o fala, mas não mostra que as explicações ajudam, de fato, na compreensão do código nem que atendem às necessidades do público-alvo. Enquanto não houver avaliação com programadores com deficiência visual, o trabalho não pode afirmar benefício para a compreensão de código-fonte, apenas a viabilidade técnica e a conformidade com as regras de acessibilidade definidas. Mesmo que a avaliação exploratória seja realizada, a amostra pequena limitará a generalização dos resultados.
 
-As explicações dependem de modelos de linguagem, que podem produzir afirmações sem respaldo nos dados, como observado nas execuções descritas na Seção~\ref{sec:resultgeracao}. O marcador \enquote{Inferência:} sinaliza apenas as deduções que o próprio modelo reconhece como tais, e a verificação automática não estabelece a veracidade do conteúdo. A qualidade em português e a obediência às regras de forma ainda não foram medidas de forma sistemática, e os resultados podem variar entre versões do modelo e do servidor e entre equipamentos, mesmo com temperatura zero e semente fixa.
+As explicações dependem de modelos de linguagem, que podem produzir afirmações sem respaldo nos dados, como observado nas execuções descritas na Seção~\ref{sec:resultgeracao}. O marcador \enquote{Inferência:} sinaliza apenas as deduções que o próprio modelo reconhece como tais, e a obediência às regras de forma não garante a veracidade do conteúdo. A qualidade em português e a obediência às regras de forma ainda não foram medidas de forma sistemática, e os resultados podem variar entre versões do modelo e do servidor e entre equipamentos, mesmo com temperatura zero e semente fixa.
 
 A análise limita-se a código \textit{Python}. A resolução de chamadas por nome simples, sem inferência de tipos, pode ligar uma chamada a mais de uma definição, e a lista de pontos críticos é fechada, com cinco tipos, e não cobre padrões específicos de \textit{frameworks}.
 
@@ -633,9 +623,9 @@ O protótipo analisa projetos \textit{Python} inteiros, reporta os arquivos com 
 
 A validação técnica mostrou que cada etapa do fluxo funciona nas condições testadas: a análise estática produziu o relatório, o NVDA o falou em um computador com \textit{Windows} e a geração produziu a visão geral e as explicações com modelo executado localmente e em nuvem. As execuções também evidenciaram os limites do uso de modelos de linguagem: nos três textos gerados em nuvem, o modelo respeitou o marcador de inferência e o limite de palavras por frase, mas deixou um nome de função com sublinhado e atribuiu a uma gravidade uma justificativa ausente dos dados enviados; na execução local, o modelo apontou uma divisão por zero que não existe no código. Esses defeitos reforçam que a análise estática deve permanecer como fonte dos fatos e que o texto gerado precisa ser verificado.
 
-Permanecem por concluir a verificação automática das explicações e a comparação entre os modelos candidatos, das quais dependem a escolha do modelo recomendado e a medição sistemática da conformidade com as regras de acessibilidade. Sobretudo, a validação realizada é técnica e não permite afirmar que as explicações ajudam, de fato, na compreensão do código; essa resposta depende da avaliação com programadores com deficiência visual proposta neste trabalho (Seção~\ref{sec:usuarios}).
+Ficam como trabalhos futuros a verificação automática das explicações, prevista como Fase 3, e a comparação entre os modelos candidatos, das quais dependem a escolha do modelo recomendado e a medição sistemática da conformidade com as regras de acessibilidade. Sobretudo, a validação realizada é técnica e não permite afirmar que as explicações ajudam, de fato, na compreensão do código; essa resposta depende da avaliação com programadores com deficiência visual proposta neste trabalho (Seção~\ref{sec:usuarios}).
 
-Como contribuição, o trabalho mostra a viabilidade técnica de separar a identificação dos pontos críticos, feita de forma determinística, da redação das explicações, feita pelo modelo de linguagem sob regras de forma pensadas para a escuta, e oferece uma base para a continuidade descrita na Seção~\ref{sec:futuros}, que inclui a avaliação com usuários e o porte da ferramenta para macOS e Linux.
+Como contribuição, o trabalho mostra a viabilidade técnica de separar a identificação dos pontos críticos, feita de forma determinística, da redação das explicações, feita pelo modelo de linguagem sob regras de forma pensadas para a escuta, e oferece uma base para a continuidade descrita na Seção~\ref{sec:futuros}, que inclui a avaliação com usuários, a verificação automática das explicações e o porte da ferramenta para \textit{macOS} e \textit{Linux}.
 
 
 \section{Trabalhos Futuros}\label{sec:futuros}
@@ -644,11 +634,15 @@ Como contribuição, o trabalho mostra a viabilidade técnica de separar a ident
 
 A avaliação que permitiria afirmar benefício para a compreensão de código não foi realizada e é a continuidade mais importante deste trabalho. Propõe-se uma avaliação exploratória com programadores com deficiência visual que utilizem o NVDA, em que cada participante responderia a perguntas de compreensão sobre trechos de um projeto de exemplo em duas condições: com a explicação do protótipo, ouvida pelo NVDA, e sem ela, explorando o código apenas com o leitor de tela, em procedimento semelhante à comparação com e sem Inteligência Artificial adotada por \textcite{latinoware34224}. Seriam registrados o acerto das respostas, o tempo gasto e a percepção dos participantes sobre a utilidade, a clareza e o esforço. Estudos da área têm utilizado amostras pequenas, com quatro participantes em \textcite{latinoware34224} e dez em \textcite{latinoware20457}, o que limitaria a generalização dos resultados; a participação de pessoas exige ainda consentimento livre e esclarecido e a observância dos procedimentos de ética em pesquisa aplicáveis à instituição.
 
+\subsection{Verificação Automática das Explicações}\label{sec:verificacaofutura}
+
+Propõe-se implementar a Fase 3 do protótipo: um verificador que confira automaticamente, sobre o texto produzido pelo modelo, os critérios examinados manualmente neste trabalho (Seção~\ref{sec:verificador}) e as demais regras de forma da Seção~\ref{sec:estrategia}, como a ausência de tabelas, listas e títulos. O verificador conferiria também a cobertura dos pontos críticos, isto é, a menção, na explicação de cada região, de todos os pontos enviados ao modelo. Esses critérios tratam da forma e da cobertura, e não da veracidade do conteúdo; afirmações sem respaldo nos dados, como as observadas na Seção~\ref{sec:resultgeracao}, continuariam a exigir revisão manual. Com o verificador, propõe-se também a comparação sistemática entre os modelos candidatos da Tabela~\ref{tab:modelos}, sobre os mesmos projetos e com a mesma configuração.
+
 \subsection{Porte para Outros Sistemas e Demais Continuidades}
 
 O porte da ferramenta para os sistemas \textit{macOS} e \textit{Linux} é outra continuidade. A análise estática e a geração de explicações não dependem de recursos específicos do \textit{Windows}; o que falta é implementar a fala com os leitores de tela desses sistemas, por meio da interface de fala já existente no protótipo, oferecer um comando de execução e uma instalação equivalentes aos do \textit{Windows} e validar o funcionamento em cada sistema.
 
-Propõem-se também: a implementação do verificador automático das explicações (Seção~\ref{sec:verificador}) e a comparação sistemática entre os modelos candidatos; a personalização do nível de detalhe das explicações; a navegação pelos resultados, região por região, com a explicação gerada sob demanda; o suporte a outras linguagens de programação; e a integração da ferramenta a ambientes de desenvolvimento amplamente utilizados.
+Propõem-se também: a personalização do nível de detalhe das explicações; a navegação pelos resultados, região por região, com a explicação gerada sob demanda; o suporte a outras linguagens de programação; e a integração da ferramenta a ambientes de desenvolvimento amplamente utilizados.
 
 
 % ----------------------------------------------------------
